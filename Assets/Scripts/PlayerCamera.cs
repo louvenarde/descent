@@ -9,6 +9,22 @@ public class PlayerCamera : MonoBehaviour {
     [SerializeField]
     private Material debugMaterial;
 
+    [SerializeField]
+    private float cameraDistance = 3f;
+
+    [SerializeField]
+    private float cameraHeight = 2f;
+
+    private void FixedUpdate()
+    {
+        Vector3 target = controller.Placement.Board.position;
+        transform.LookAt(target);
+
+        Vector3 direction = (transform.position - target);
+        direction.y = 0f;
+        transform.position = direction.normalized * cameraDistance + target + cameraHeight * Vector3.up;
+    }
+
     private void OnPostRender()
     {
 #if UNITY_EDITOR
