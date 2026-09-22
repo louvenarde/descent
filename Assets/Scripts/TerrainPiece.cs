@@ -70,6 +70,8 @@ public class TerrainPiece : MonoBehaviour
 
         List<Vector3Int> tris = new List<Vector3Int>();
         List<Vector3> points = new List<Vector3>();
+        List<Vector2> uv0 = new List<Vector2>();
+        List<Color32> colors = new List<Color32>();
 
         List<Vector3> lastRow = new List<Vector3>();
 
@@ -153,12 +155,15 @@ public class TerrainPiece : MonoBehaviour
 
                     Vector3 entryPoint = transform.InverseTransformPoint(entryConnector.Value.exitRow[exitRowIndex]);
 
+                    z = Mathf.Lerp(entryPoint.z, z, linkInfluence01);
                     y = Mathf.Lerp(entryPoint.y, y, linkInfluence01);
                     x = Mathf.Lerp(entryPoint.x, x, linkInfluence01);
                 }
 
                 Vector3 point = new Vector3(x, y, z);
                 points.Add(point);
+                uv0.Add(new Vector2(normalizedX, normalizedZ));
+                colors.Add(new Color32(0xFF, 0xFF, 0xFF, 0xFF));
 
                 if (vxZ == vxLength)
                 {
@@ -191,6 +196,16 @@ public class TerrainPiece : MonoBehaviour
 
         integerTris.AddRange(inMesh.triangles);
         inMesh.SetTriangles(integerTris, 0);
+
+        inMesh.RecalculateNormals();
+
+        List<Vector2> existingUVs = new List<Vector2>();
+        inMesh.GetUVs(0, existingUVs);
+        uv0.AddRange(existingUVs);
+        inMesh.SetUVs(0, uv0);
+
+        colors.AddRange(inMesh.colors32);
+        inMesh.SetColors(colors);
 
         {
             Vector3 middlePoint = Vector3.zero;
