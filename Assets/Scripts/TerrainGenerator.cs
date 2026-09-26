@@ -3,19 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Assertions;
 
-
-
 #if UNITY_EDITOR
 using UnityEditor;
-
 #endif
 
 
+[RequireComponent(typeof(BezierSpline))]
 [ExecuteInEditMode]
 public class TerrainGenerator : MonoBehaviour
 {
 #if UNITY_EDITOR
     public TerrainPiece pieceExample;
+
+    private BezierSpline spline;
 
     [System.Serializable]
     private class DescentTerrain
@@ -38,6 +38,7 @@ public class TerrainGenerator : MonoBehaviour
 
     void Awake()
     {
+        spline = GetComponent<BezierSpline>();
         Clear();
         pieceExample.gameObject.SetActive(false);
     }
@@ -72,7 +73,7 @@ public class TerrainGenerator : MonoBehaviour
             connx.piece = pieceInst;
 
             TerrainPiece.Connector connector;
-            connx.piece.Build(previousConnector, terrainDefinition[i], out connector);
+            connx.piece.Build(previousConnector, terrainDefinition[i], spline, i, out connector);
             connx.outgoingConnector = connector;
             previousConnector = connector;
 

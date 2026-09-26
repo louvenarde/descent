@@ -4,13 +4,8 @@ using UnityEngine.Assertions;
 using System;
 using System.Linq;
 
-
-
-
-
 #if UNITY_EDITOR
 using UnityEditor;
-
 #endif
 
 public class TerrainPiece : MonoBehaviour
@@ -24,26 +19,18 @@ public class TerrainPiece : MonoBehaviour
         public Vector3 exitDirection;
         public float exitWidth;
         public float exitValleyDepth;
-        public List<Vector3> exitRow;
+        public List<Vector2> exitRow;
     }
 
 
     private Mesh mesh;
 
-    public void Build(Nullable<Connector> entryConnector, TerrainPieceInputData inputData, out Connector exitConnector)
+    public void Build(Nullable<Connector> entryConnector, TerrainPieceInputData inputData, BezierSpline spline, int index, out Connector exitConnector)
     {
         exitConnector = new Connector();
-        exitConnector.exitRow = new List<Vector3>();
+        exitConnector.exitRow = new List<Vector2>();
 
-        float entryWidthMeters = inputData.exitWidthMeters;
-
-        transform.position = Vector3.zero;
-
-        if (entryConnector.HasValue)
-        {
-            entryWidthMeters = entryConnector.Value.exitWidth;
-            transform.position = entryConnector.Value.exitPoint;
-        }
+        transform.position = Vector3.zero;// spline.GetPoint(index / (float)spline.CurveCount);
 
         MeshFilter filter = gameObject.GetComponent<MeshFilter>();
         if (!filter)
@@ -56,6 +43,13 @@ public class TerrainPiece : MonoBehaviour
         {
             gameObject.AddComponent<MeshRenderer>();
         }
+
+        MeshCollider collider = gameObject.GetComponent<MeshCollider>();
+        if (!collider)
+        {
+            collider = gameObject.AddComponent<MeshCollider>();
+        }
+
 
         Mesh inMesh;
         {
@@ -75,23 +69,25 @@ public class TerrainPiece : MonoBehaviour
 
         List<Vector3> lastRow = new List<Vector3>();
 
-        int vxWidth = inputData.vxWidth;
+        int nbQuadWidth = inputData.nbQuadWidth;
+        int nbQuadLength = inputData.nbQuadLength;
         float valleyDepth = inputData.valleyDepth;
-        int vxLength = inputData.vxLength;
         AnimationCurve valleyCurveNormalized = inputData.valleyCurveNormalized;
         float exitWidthMeters = inputData.exitWidthMeters;
         int connectorInfluencePercent = inputData.connectorInfluencePercent;
-        float lengthMeters = inputData.lengthMeters;
-        int steepnessPercent = inputData.steepnessPercent;
 
         float connectorInfluence01 = connectorInfluencePercent / (100f);
 
-        for (int vxX = 0; vxX < vxWidth + 1; vxX++)
+        int nbVertWidth = nbQuadWidth + 1;
+        int nbVertLength = nbQuadLength + 1;
+        for (int vxX = 0; vxX < nbVertWidth; vxX++)
         {
-            for (int vxZ = 0; vxZ < vxLength + 1; vxZ++)
+            for (int vxZ = 0; vxZ < nbVertLength; vxZ++)
             {
-                float normalizedX = (vxX / (float)vxWidth);
+                float normalizedX = (vxX / (float)nbQuadWidth);
                 Assert.IsFalse(float.IsNaN(normalizedX), "normalizedX");
+                float normalizedZ = (vxZ / (float)nbQuadLength);
+                Assert.IsFalse(float.IsNaN(normalizedZ), "normalizedZ");
 
                 float localConnectorInfluence01 = connectorInfluence01;
                 if (vxZ == 0 && !inputData.detached)
@@ -99,49 +95,14 @@ public class TerrainPiece : MonoBehaviour
                     localConnectorInfluence01 = 1; // Always attach the first point
                 }
 
-                float normalizedZ = (vxZ / (float)vxLength);
-                Assert.IsFalse(float.IsNaN(normalizedZ), "normalizedZ");
+                Vector2 localPos = new Vector2(
+                    exitWidthMeters * normalizedX - exitWidthMeters * 0.5f, // Remove half width to make centered
+                    valleyDepth * valleyCurveNormalized.Evaluate(normalizedX)
+                );
+                // We do not interpolate for connector influence in localPos because the width and depth are baked in the exitRow
+                // and doing it twice lead to exponential behavior which feel unnatural 
 
-                float width = Mathf.Lerp(entryWidthMeters, exitWidthMeters, normalizedZ * localConnectorInfluence01 + 1f - localConnectorInfluence01);
-                Assert.IsFalse(float.IsNaN(width), "width");
-
-                float x = width * normalizedX - width * 0.5f; // Remove half width to make centered
-                Assert.IsFalse(float.IsNaN(x), "x");
-
-                float valleyDepthAtThisPoint = valleyDepth;
-                if (entryConnector.HasValue)
-                {
-                    valleyDepthAtThisPoint = Mathf.Lerp(
-                        entryConnector.Value.exitValleyDepth,
-                        valleyDepth,
-                        normalizedZ * localConnectorInfluence01 + 1f - localConnectorInfluence01
-                    );
-
-                    Assert.IsFalse(float.IsNaN(valleyDepthAtThisPoint), "valleyDepthAtThisPoint");
-                }
-
-                float heightFromValley = valleyDepthAtThisPoint * valleyCurveNormalized.Evaluate(normalizedX);
-                Assert.IsFalse(float.IsNaN(heightFromValley), "heightFromValley");
-
-
-                float zSpacingWanted = lengthMeters * normalizedZ;
-                Assert.IsFalse(float.IsNaN(zSpacingWanted), "zSpacingWanted");
-
-
-                float heightFromSteepness = -lengthMeters * normalizedZ * (steepnessPercent / 100f);
-                Assert.IsFalse(float.IsNaN(heightFromSteepness), "heightFromSteepness");
-
-                float y = heightFromSteepness + heightFromValley;
-                Assert.IsFalse(float.IsNaN(y), "y");
-
-                // Math approved by Togi of TogiMaro
-                float z;
-                {
-                    z = Mathf.Sqrt(Mathf.Max(0f, zSpacingWanted * zSpacingWanted - y * y));
-                    Assert.IsFalse(float.IsNaN(z), "z");
-                }
-
-                // Final influence override to ensure connection between valleys of different curves
+                // Influence override to ensure connection between valleys of different curves
                 if (entryConnector.HasValue)
                 {
                     float linkInfluence01 = normalizedZ * localConnectorInfluence01 + 1f - localConnectorInfluence01;
@@ -150,36 +111,41 @@ public class TerrainPiece : MonoBehaviour
                         Mathf.Clamp(
                             (int)(entryConnector.Value.exitRow.Count * normalizedX),
                             0,
-                            entryConnector.Value.exitRow.Count-1
+                            entryConnector.Value.exitRow.Count - 1
                         );
 
-                    Vector3 entryPoint = transform.InverseTransformPoint(entryConnector.Value.exitRow[exitRowIndex]);
+                    Vector3 entryPoint = entryConnector.Value.exitRow[exitRowIndex];
 
-                    z = Mathf.Lerp(entryPoint.z, z, linkInfluence01);
-                    y = Mathf.Lerp(entryPoint.y, y, linkInfluence01);
-                    x = Mathf.Lerp(entryPoint.x, x, linkInfluence01);
+                    localPos.x = Mathf.Lerp(entryPoint.x, localPos.x, linkInfluence01);
+                    localPos.y = Mathf.Lerp(entryPoint.y, localPos.y, linkInfluence01);
                 }
 
-                Vector3 point = new Vector3(x, y, z);
-                points.Add(point);
+                float splineLocation = (index * nbQuadLength + vxZ) / (float)(spline.CurveCount * nbQuadLength);
+                Vector3 splinePos = spline.GetPoint(splineLocation) - transform.position;
+                Vector3 splineRight = spline.GetRight(splineLocation);
+                Vector3 splineUp = spline.GetUp(splineLocation);
+
+                Vector3 globalPos = splinePos + splineRight * localPos.x + splineUp * localPos.y;
+
+                points.Add(globalPos);
                 uv0.Add(new Vector2(normalizedX, normalizedZ));
                 colors.Add(new Color32(0xFF, 0xFF, 0xFF, 0xFF));
 
-                if (vxZ == vxLength)
+                if (vxZ == nbQuadLength)
                 {
-                    lastRow.Add(new Vector3(x, heightFromSteepness, z));
-                    exitConnector.exitRow.Add(transform.TransformPoint(point));
+                    lastRow.Add(globalPos);
+                    exitConnector.exitRow.Add(localPos); // we keep them in localSpace
                 }
             }
         }
 
-        for (int a = 0; a <= vxWidth * vxLength + 1; a += vxLength + 1)
+        for (int x = 0; x < nbQuadWidth; x++)
         {
-            for (int b = 0; b < vxLength; b++)
+            for (int y = 0; y < nbQuadLength; y++)
             {
-                int n = a + b;
-                tris.Add(new Vector3Int(n, n + 1, n + vxLength + 1 + 1));
-                tris.Add(new Vector3Int(n, n + vxLength + 1 + 1, n + vxLength + 1));
+                int n = x * nbVertLength + y;
+                tris.Add(new Vector3Int(n, n + 1, n + 1 + nbVertLength));
+                tris.Add(new Vector3Int(n, n + 1 + nbVertLength, n + nbVertLength));
             }
         }
 
@@ -191,21 +157,14 @@ public class TerrainPiece : MonoBehaviour
             integerTris.Add(tris[i].z);
         }
 
-        points.AddRange(inMesh.vertices);
         inMesh.SetVertices(inVertices: points);
+        inMesh.SetUVs(0, uv0);
+        inMesh.SetColors(colors);
 
-        integerTris.AddRange(inMesh.triangles);
         inMesh.SetTriangles(integerTris, 0);
 
         inMesh.RecalculateNormals();
-
-        List<Vector2> existingUVs = new List<Vector2>();
-        inMesh.GetUVs(0, existingUVs);
-        uv0.AddRange(existingUVs);
-        inMesh.SetUVs(0, uv0);
-
-        colors.AddRange(inMesh.colors32);
-        inMesh.SetColors(colors);
+        inMesh.RecalculateBounds();
 
         {
             Vector3 middlePoint = Vector3.zero;
@@ -219,7 +178,8 @@ public class TerrainPiece : MonoBehaviour
             exitConnector.exitPoint = transform.TransformPoint(middlePoint);
         }
 
-        filter.mesh = inMesh;
+        filter.sharedMesh = inMesh;
+        collider.sharedMesh = inMesh;
 
         var perpendicular = Vector3.Cross(Vector3.up, lastRow[0] - lastRow[1]);
         exitConnector.exitAngle = 0f;
