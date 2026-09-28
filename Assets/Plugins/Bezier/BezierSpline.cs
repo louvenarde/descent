@@ -159,15 +159,15 @@ public class BezierSpline : MonoBehaviour
         return GetVelocity(t).normalized;
     }
 
-    public Vector3 GetRight(float t)
+    public Vector3 GetRight(float t, Vector3 globalUp)
     {
-        return Vector3.Cross(Vector3.up, GetForward(t)).normalized;
+        return Vector3.Cross(globalUp, GetForward(t)).normalized;
     }
 
-    public Vector3 GetUp(float t)
+    public Vector3 GetUp(float t, Vector3 globalUp)
     {
         Vector3 forward = GetForward(t);
-        return Vector3.Cross(forward, Vector3.Cross(Vector3.up, forward)).normalized;
+        return Vector3.Cross(forward, Vector3.Cross(globalUp, forward)).normalized;
     }
 
     public void AddCurve()
@@ -183,6 +183,25 @@ public class BezierSpline : MonoBehaviour
 
         modes.Add(modes[modes.Count - 1]);
         EnforceMode(points.Count - 4);
+    }
+
+    public void InsertCurve(int index)
+    {
+        if(index >= CurveCount)
+        {
+            AddCurve();
+            return;
+        }
+        Vector3 start = points[(index - 1) * 3 + 1];
+        Vector3 end = points[(index - 1) * 3 + 2];
+
+        points.InsertRange(
+            (index - 1) * 3 + 2,
+            new List<Vector3>{ Vector3.Lerp(start, end, 0.25f), Vector3.Lerp(start, end, 0.5f), Vector3.Lerp(start, end, 0.75f) }
+        );
+
+        modes.Insert(index + 1, modes[index]);
+        EnforceMode((index - 1) * 3 + 2);
     }
 
     public void RemoveCurve(int index)

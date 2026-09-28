@@ -1,11 +1,9 @@
-﻿using System.Reflection;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(BezierSpline))]
 public class BezierSplineInspector : Editor
 {
-
     private const int stepsPerCurve = 10;
     private const float directionScale = 0.5f;
     private const float handleSize = 0.04f;
@@ -13,7 +11,7 @@ public class BezierSplineInspector : Editor
 
     private static Color[] modeColors = {
         Color.white,
-        Color.yellow,
+        Color.green,
         Color.cyan
     };
 
@@ -41,6 +39,12 @@ public class BezierSplineInspector : Editor
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(15);
+            if (GUILayout.Button("Add segment after this point"))
+            {
+                Undo.RecordObject(spline, "Insert Curve");
+                spline.InsertCurve((selectedIndex + 1) / 3);
+                EditorUtility.SetDirty(spline);
+            }
             if (GUILayout.Button("Remove selected point"))
             {
                 Undo.RecordObject(spline, "Remove Point");
@@ -87,10 +91,19 @@ public class BezierSplineInspector : Editor
             Vector3 p3 = ShowPoint(i + 2);
 
             Handles.color = Color.gray;
+
+            int node = (selectedIndex + 1) / 3 * 3;
+            if (selectedIndex >= 0 && node >= i - 1 && node <= i)
+                Handles.color = Color.yellow;
+
             Handles.DrawLine(p0, p1);
+
+            Handles.color = Color.gray;
+            if (selectedIndex >= 0 && node >= i + 1 && node <= i + 2)
+                Handles.color = Color.yellow;
             Handles.DrawLine(p2, p3);
 
-            Handles.DrawBezier(p0, p3, p1, p2, Color.white, null, 2f);
+            Handles.DrawBezier(p0, p3, p1, p2, Color.white, null, 4f);
             p0 = p3;
         }
 
@@ -107,8 +120,8 @@ public class BezierSplineInspector : Editor
         {
             Vector3 point = spline.GetPoint(i / (float)steps);
             Vector3 forward = spline.GetForward(i / (float)steps);
-            Vector3 right = spline.GetRight(i / (float)steps);
-            Vector3 up = spline.GetUp(i / (float)steps);
+            Vector3 right = spline.GetRight(i / (float)steps, spline.transform.up);
+            Vector3 up = spline.GetUp(i / (float)steps, spline.transform.up);
             Handles.color = Color.red;
             Handles.DrawLine(point, point + right * directionScale);
             Handles.color = Color.green;
@@ -123,10 +136,23 @@ public class BezierSplineInspector : Editor
         Vector3 point = handleTransform.TransformPoint(spline.GetControlPoint(index));
         float size = HandleUtility.GetHandleSize(point);
         Handles.color = modeColors[(int)spline.GetControlPointMode(index)];
+        UnityEditor.Handles.DrawCapFunction capFunction = Handles.RectangleCap;
         if (index % 3 == 0)
+        {
+            capFunction = Handles.DotCap;
             Handles.color = Color.red;
+        }
 
-        if (Handles.Button(point, Quaternion.identity, size * handleSize, size * pickSize, Handles.DotCap))
+        if (selectedIndex >= 0)
+        {
+            int node = (selectedIndex + 1) / 3 * 3;
+            if (node >= index - 1 && node <= index + 1)
+            {
+                capFunction = Handles.DotCap;
+            }
+        }
+
+        if (Handles.Button(point, Quaternion.LookRotation(Camera.current.transform.forward), size * handleSize, size * pickSize, capFunction))
         {
             selectedIndex = index;
             Repaint();
@@ -139,7 +165,7 @@ public class BezierSplineInspector : Editor
             if(Tools.pivotRotation == PivotRotation.Local)
             {
                 float splinePos = ((index + 1) / 3) / (float)spline.CurveCount;
-                handleRotation = Quaternion.LookRotation(spline.GetForward(splinePos), spline.GetUp(splinePos));
+                handleRotation = Quaternion.LookRotation(spline.GetForward(splinePos), spline.GetUp(splinePos, spline.transform.up));
             }
 
             point = Handles.DoPositionHandle(point, handleRotation);

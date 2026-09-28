@@ -22,7 +22,6 @@ public class TerrainPiece : MonoBehaviour
         public List<Vector2> exitRow;
     }
 
-
     private Mesh mesh;
 
     public void Build(Nullable<Connector> entryConnector, TerrainPieceInputData inputData, BezierSpline spline, int index, out Connector exitConnector)
@@ -30,7 +29,7 @@ public class TerrainPiece : MonoBehaviour
         exitConnector = new Connector();
         exitConnector.exitRow = new List<Vector2>();
 
-        transform.position = Vector3.zero;// spline.GetPoint(index / (float)spline.CurveCount);
+        transform.position = spline.GetPoint(index / (float)spline.CurveCount);
 
         MeshFilter filter = gameObject.GetComponent<MeshFilter>();
         if (!filter)
@@ -62,7 +61,6 @@ public class TerrainPiece : MonoBehaviour
             mesh.Clear();
         }
 
-        List<Vector3Int> tris = new List<Vector3Int>();
         List<Vector3> points = new List<Vector3>();
         List<Vector2> uv0 = new List<Vector2>();
         List<Color32> colors = new List<Color32>();
@@ -121,46 +119,42 @@ public class TerrainPiece : MonoBehaviour
                 }
 
                 float splineLocation = (index * nbQuadLength + vxZ) / (float)(spline.CurveCount * nbQuadLength);
-                Vector3 splinePos = spline.GetPoint(splineLocation) - transform.position;
-                Vector3 splineRight = spline.GetRight(splineLocation);
-                Vector3 splineUp = spline.GetUp(splineLocation);
+                Vector3 splinePos = spline.GetPoint(splineLocation);
+                Vector3 splineRight = spline.GetRight(splineLocation, transform.up);
+                Vector3 splineUp = spline.GetUp(splineLocation, transform.up);
 
                 Vector3 globalPos = splinePos + splineRight * localPos.x + splineUp * localPos.y;
 
-                points.Add(globalPos);
+                points.Add(transform.InverseTransformPoint(globalPos));
                 uv0.Add(new Vector2(normalizedX, normalizedZ));
                 colors.Add(new Color32(0xFF, 0xFF, 0xFF, 0xFF));
 
                 if (vxZ == nbQuadLength)
                 {
-                    lastRow.Add(globalPos);
+                    lastRow.Add(transform.InverseTransformPoint(globalPos));
                     exitConnector.exitRow.Add(localPos); // we keep them in localSpace
                 }
             }
         }
+        inMesh.SetVertices(inVertices: points);
+        inMesh.SetUVs(0, uv0);
+        inMesh.SetColors(colors);
 
+        List<int> integerTris = new List<int>(nbQuadWidth * nbQuadLength * 3);
         for (int x = 0; x < nbQuadWidth; x++)
         {
             for (int y = 0; y < nbQuadLength; y++)
             {
                 int n = x * nbVertLength + y;
-                tris.Add(new Vector3Int(n, n + 1, n + 1 + nbVertLength));
-                tris.Add(new Vector3Int(n, n + 1 + nbVertLength, n + nbVertLength));
+                integerTris.Add(n);
+                integerTris.Add(n + 1);
+                integerTris.Add(n + 1 + nbVertLength);
+
+                integerTris.Add(n);
+                integerTris.Add(n + 1 + nbVertLength);
+                integerTris.Add(n + nbVertLength);
             }
         }
-
-        List<int> integerTris = new List<int>(tris.Count * 3);
-        for (int i = 0; i < tris.Count; i++)
-        {
-            integerTris.Add(tris[i].x);
-            integerTris.Add(tris[i].y);
-            integerTris.Add(tris[i].z);
-        }
-
-        inMesh.SetVertices(inVertices: points);
-        inMesh.SetUVs(0, uv0);
-        inMesh.SetColors(colors);
-
         inMesh.SetTriangles(integerTris, 0);
 
         inMesh.RecalculateNormals();
@@ -168,22 +162,25 @@ public class TerrainPiece : MonoBehaviour
 
         {
             Vector3 middlePoint = Vector3.zero;
+            Vector3 perpendicular = Vector3.zero;
             for (int i = 0; i < lastRow.Count; i++)
             {
                 middlePoint += lastRow[i];
-            }
 
+                if (i < lastRow.Count - 1)
+                    perpendicular += Vector3.Cross(Vector3.up, lastRow[i] - lastRow[i + 1]);
+            }
             middlePoint /= lastRow.Count;
+            perpendicular /= lastRow.Count - 1;
 
             exitConnector.exitPoint = transform.TransformPoint(middlePoint);
+            exitConnector.exitDirection = perpendicular;
         }
 
         filter.sharedMesh = inMesh;
         collider.sharedMesh = inMesh;
 
-        var perpendicular = Vector3.Cross(Vector3.up, lastRow[0] - lastRow[1]);
         exitConnector.exitAngle = 0f;
-        exitConnector.exitDirection = perpendicular;
         exitConnector.exitWidth = exitWidthMeters;
         exitConnector.exitValleyDepth = valleyDepth;
     }
@@ -196,7 +193,7 @@ public class TerrainPiece : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
+    /*private void OnDrawGizmosSelected()
     {
         if (mesh)
         {
@@ -226,6 +223,6 @@ public class TerrainPiece : MonoBehaviour
             Gizmos.matrix = Matrix4x4.identity;
             Handles.matrix = Matrix4x4.identity;
         }
-    }
+    }*/
 #endif
 }
