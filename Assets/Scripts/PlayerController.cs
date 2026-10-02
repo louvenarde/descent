@@ -117,10 +117,10 @@ public class PlayerController : MonoBehaviour
         private void RefreshHipDirection(HumanoidPlacement data, bool drawGizmos = false)
         {
             // Compute hip direction vector to align the legs
-            Vector3 hipDirectionVector =
+            hipDirectionVector =
                 (
-                    (feetPosition[RIGHT] + feetDirections[RIGHT]) -
-                    (feetPosition[LEFT] + feetDirections[LEFT])
+                    (feetPosition[LEFT] + feetDirections[LEFT]) -
+                    (feetPosition[RIGHT] + feetDirections[RIGHT])
                 ).normalized;
         }
 
@@ -239,7 +239,7 @@ public class PlayerController : MonoBehaviour
                 }
 
                 // ?? true in the context of the board but like... uuuh...
-                Vector3 legRight = Vector3.right;
+                Vector3 legRight = Vector3.left; // Left is regular, Right is goofy
                 Vector3 kneePosition =
                     feetPosition[foot]
                     + feetPostureUpVector[foot].normalized * data.Parameters.ankleLength * feetFlex01[foot]
