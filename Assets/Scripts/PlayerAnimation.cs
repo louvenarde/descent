@@ -18,7 +18,7 @@ public class PlayerAnimation : MonoBehaviour
         [SerializeField]
         private Transform[] heels = new Transform[PlayerController.FEET];
 
-        public void Place(Transform board, PlayerController.LegsPosture posture)
+        public void Place(Transform board, PlayerController.LegsPosture posture, bool setLimbPositions)
         {
             for (int i = 0; i < PlayerController.FEET; i++)
             {
@@ -38,10 +38,13 @@ public class PlayerAnimation : MonoBehaviour
                         board.up
                     ) * Quaternion.Euler(90f, 0f, 0f);
 
-                    thighs[foot].position = board.TransformPoint
-                        (
-                            posture.hipsPosition[foot]
-                        );
+                    if (setLimbPositions)
+                    {
+                        thighs[foot].position = board.TransformPoint
+                            (
+                                posture.hipsPosition[foot]
+                            );
+                    }
                 }
 
                 if (shins[foot])
@@ -59,26 +62,32 @@ public class PlayerAnimation : MonoBehaviour
                     ) * Quaternion.Euler(-90f, 0, 0f)
                     * Quaternion.Euler(0f, 0f, 180f);
 
-                    shins[foot].position = board.TransformPoint
+                    if (setLimbPositions)
+                    {
+                        shins[foot].position = board.TransformPoint
                         (
                             posture.kneesPosition[foot]
                         );
+                    }
                 }
 
                 if (feet[foot])
                 {
                     feet[foot].rotation = Quaternion.LookRotation(
-                        -board.right,
-                        board.up
-                        ) * Quaternion.Euler(0f, 0f, 180f)
-                         * Quaternion.Euler(-10f, 0f, 0f)
-                    ;
+                        board.up,
+                        -board.right);
 
+                }
 
-                    feet[foot].position = board.TransformPoint
+                if (heels[foot])
+                {
+                    if (setLimbPositions)
+                    {
+                        heels[foot].position = board.TransformPoint
                         (
                             posture.feetPosition[foot]
-                        ) + board.up * 0.12f;
+                        );
+                    }
                 }
 
             }
@@ -97,6 +106,9 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField]
     private Transform hipCenter;
 
+    [SerializeField]
+    private bool setLimbPositions = false;
+
     void LateUpdate()
     {
         if (player && board)
@@ -108,7 +120,7 @@ public class PlayerAnimation : MonoBehaviour
                 );
             }
 
-            legs.Place(board, player.Posture);
+            legs.Place(board, player.Posture, setLimbPositions);
         }
     }
 
