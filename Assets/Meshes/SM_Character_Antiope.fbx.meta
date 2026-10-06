@@ -54,6 +54,16 @@ ModelImporter:
     100092: toe.R_end
     100094: upper_arm.L
     100096: upper_arm.R
+    100098: board
+    100100: board.slot.IKtarget.L
+    100102: board.slot.IKtarget.L_end
+    100104: board.slot.IKtarget.R
+    100106: board.slot.IKtarget.R_end
+    100108: board.slot.L
+    100110: board.slot.R
+    100112: board_rig
+    100114: board_root
+    100116: root
     400000: BoardPlaceholder
     400002: Boot
     400004: breast.L
@@ -103,6 +113,16 @@ ModelImporter:
     400092: toe.R_end
     400094: upper_arm.L
     400096: upper_arm.R
+    400098: board
+    400100: board.slot.IKtarget.L
+    400102: board.slot.IKtarget.L_end
+    400104: board.slot.IKtarget.R
+    400106: board.slot.IKtarget.R_end
+    400108: board.slot.L
+    400110: board.slot.R
+    400112: board_rig
+    400114: board_root
+    400116: root
     4300000: BoardPlaceholder
     4300002: Boot
     4300004: Coat
@@ -114,6 +134,7 @@ ModelImporter:
     7400002: metarig|Idle
     7400004: metarig|Riding_Test
     7400006: Riding_Test
+    7400008: metarig|SnowAngel
     9500000: //RootNode
     13700000: BoardPlaceholder
     13700002: Boot
@@ -131,12 +152,19 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    motionNodeName: 
+    motionNodeName: metarig/root
     animationImportErrors: 
-    animationImportWarnings: 
+    animationImportWarnings: "\nDefault bone length found in this file is different
+      form the one found in the source avatar:\n\t'thigh.R' : position error = 139.542603
+      mm\n\nClip 'metarig|Chilling' has import animation warnings that might lower
+      retargeting quality:\nNote: Activate translation DOF on avatar to improve retargeting
+      quality.\n\t'thigh.R' has translation animation that will be discarded.\n\nClip
+      'metarig|SnowAngel' has import animation warnings that might lower retargeting
+      quality:\nNote: Activate translation DOF on avatar to improve retargeting quality.\n\t'thigh.R'
+      has translation animation that will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    animationCompression: 3
+    animationCompression: 0
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -170,102 +198,122 @@ ModelImporter:
       transformMask:
       - path: 
         weight: 1
+      - path: board_rig
+        weight: 0
+      - path: board_rig/board_root
+        weight: 0
+      - path: board_rig/board_root/board
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.L
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.L/board.slot.IKtarget.L
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.L/board.slot.IKtarget.L/board.slot.IKtarget.L_end
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.R
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.R/board.slot.IKtarget.R
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.R/board.slot.IKtarget.R/board.slot.IKtarget.R_end
+        weight: 0
       - path: BoardPlaceholder
-        weight: 1
+        weight: 0
       - path: Boot
-        weight: 1
+        weight: 0
       - path: Coat
-        weight: 1
+        weight: 0
       - path: Cube
-        weight: 1
+        weight: 0
       - path: Hand
-        weight: 1
+        weight: 0
       - path: metarig
         weight: 1
-      - path: metarig/spine
+      - path: metarig/root
         weight: 1
-      - path: metarig/spine/pelvis.L
+      - path: metarig/root/spine
         weight: 1
-      - path: metarig/spine/pelvis.L/pelvis.L_end
+      - path: metarig/root/spine/pelvis.L
+        weight: 0
+      - path: metarig/root/spine/pelvis.L/pelvis.L_end
+        weight: 0
+      - path: metarig/root/spine/pelvis.R
+        weight: 0
+      - path: metarig/root/spine/pelvis.R/pelvis.R_end
+        weight: 0
+      - path: metarig/root/spine/spine.001
         weight: 1
-      - path: metarig/spine/pelvis.R
+      - path: metarig/root/spine/spine.001/spine.002
         weight: 1
-      - path: metarig/spine/pelvis.R/pelvis.R_end
+      - path: metarig/root/spine/spine.001/spine.002/spine.003
         weight: 1
-      - path: metarig/spine/spine.001
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.L
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.L/breast.L_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.R
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.R/breast.R_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/breast.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/breast.L/breast.L_end
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/breast.R
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/breast.R/breast.R_end
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006/spine.006_end
+        weight: 0
+      - path: metarig/root/spine/thigh.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R
+      - path: metarig/root/spine/thigh.L/shin.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/heel.02.L
+        weight: 0
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/heel.02.L/heel.02.L_end
+        weight: 0
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/toe.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/toe.L/toe.L_end
+        weight: 0
+      - path: metarig/root/spine/thigh.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
+      - path: metarig/root/spine/thigh.R/shin.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/spine.004
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/heel.02.R
+        weight: 0
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/heel.02.R/heel.02.R_end
+        weight: 0
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/toe.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006
-        weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006/spine.006_end
-        weight: 1
-      - path: metarig/spine/thigh.L
-        weight: 1
-      - path: metarig/spine/thigh.L/shin.L
-        weight: 1
-      - path: metarig/spine/thigh.L/shin.L/foot.L
-        weight: 1
-      - path: metarig/spine/thigh.L/shin.L/foot.L/heel.02.L
-        weight: 1
-      - path: metarig/spine/thigh.L/shin.L/foot.L/heel.02.L/heel.02.L_end
-        weight: 1
-      - path: metarig/spine/thigh.L/shin.L/foot.L/toe.L
-        weight: 1
-      - path: metarig/spine/thigh.L/shin.L/foot.L/toe.L/toe.L_end
-        weight: 1
-      - path: metarig/spine/thigh.R
-        weight: 1
-      - path: metarig/spine/thigh.R/shin.R
-        weight: 1
-      - path: metarig/spine/thigh.R/shin.R/foot.R
-        weight: 1
-      - path: metarig/spine/thigh.R/shin.R/foot.R/heel.02.R
-        weight: 1
-      - path: metarig/spine/thigh.R/shin.R/foot.R/heel.02.R/heel.02.R_end
-        weight: 1
-      - path: metarig/spine/thigh.R/shin.R/foot.R/toe.R
-        weight: 1
-      - path: metarig/spine/thigh.R/shin.R/foot.R/toe.R/toe.R_end
-        weight: 1
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/toe.R/toe.R_end
+        weight: 0
       - path: Pants
-        weight: 1
+        weight: 0
       - path: TestPawn
-        weight: 1
+        weight: 0
       maskType: 0
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
@@ -273,7 +321,7 @@ ModelImporter:
       name: metarig|Riding_Test
       takeName: metarig|Riding_Test
       firstFrame: 0
-      lastFrame: 1
+      lastFrame: 90
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -296,6 +344,148 @@ ModelImporter:
       transformMask:
       - path: 
         weight: 1
+      - path: Boot
+        weight: 0
+      - path: Coat
+        weight: 0
+      - path: Cube
+        weight: 0
+      - path: Hand
+        weight: 0
+      - path: metarig
+        weight: 1
+      - path: metarig/root
+        weight: 1
+      - path: metarig/root/spine
+        weight: 1
+      - path: metarig/root/spine/pelvis.L
+        weight: 0
+      - path: metarig/root/spine/pelvis.L/pelvis.L_end
+        weight: 0
+      - path: metarig/root/spine/pelvis.R
+        weight: 0
+      - path: metarig/root/spine/pelvis.R/pelvis.R_end
+        weight: 0
+      - path: metarig/root/spine/spine.001
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.L
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.L/breast.L_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.R
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.R/breast.R_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006/spine.006_end
+        weight: 0
+      - path: metarig/root/spine/thigh.L
+        weight: 1
+      - path: metarig/root/spine/thigh.L/shin.L
+        weight: 1
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L
+        weight: 1
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/heel.02.L
+        weight: 0
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/heel.02.L/heel.02.L_end
+        weight: 0
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/toe.L
+        weight: 1
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/toe.L/toe.L_end
+        weight: 0
+      - path: metarig/root/spine/thigh.R
+        weight: 1
+      - path: metarig/root/spine/thigh.R/shin.R
+        weight: 1
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R
+        weight: 1
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/heel.02.R
+        weight: 0
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/heel.02.R/heel.02.R_end
+        weight: 0
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/toe.R
+        weight: 1
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/toe.R/toe.R_end
+        weight: 0
+      - path: Pants
+        weight: 0
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: metarig|SnowAngel
+      takeName: metarig|SnowAngel
+      firstFrame: 0
+      lastFrame: 180
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: board_rig
+        weight: 0
+      - path: board_rig/board_root
+        weight: 0
+      - path: board_rig/board_root/board
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.L
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.L/board.slot.IKtarget.L
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.L/board.slot.IKtarget.L/board.slot.IKtarget.L_end
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.R
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.R/board.slot.IKtarget.R
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.R/board.slot.IKtarget.R/board.slot.IKtarget.R_end
+        weight: 0
       - path: BoardPlaceholder
         weight: 0
       - path: Boot
@@ -308,85 +498,233 @@ ModelImporter:
         weight: 0
       - path: metarig
         weight: 1
-      - path: metarig/spine
+      - path: metarig/root
         weight: 1
-      - path: metarig/spine/pelvis.L
+      - path: metarig/root/spine
+        weight: 1
+      - path: metarig/root/spine/pelvis.L
         weight: 0
-      - path: metarig/spine/pelvis.L/pelvis.L_end
+      - path: metarig/root/spine/pelvis.L/pelvis.L_end
         weight: 0
-      - path: metarig/spine/pelvis.R
+      - path: metarig/root/spine/pelvis.R
         weight: 0
-      - path: metarig/spine/pelvis.R/pelvis.R_end
+      - path: metarig/root/spine/pelvis.R/pelvis.R_end
         weight: 0
-      - path: metarig/spine/spine.001
+      - path: metarig/root/spine/spine.001
         weight: 1
-      - path: metarig/spine/spine.001/spine.002
+      - path: metarig/root/spine/spine.001/spine.002
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003
+      - path: metarig/root/spine/spine.001/spine.002/spine.003
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/breast.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.L
         weight: 0
-      - path: metarig/spine/spine.001/spine.002/spine.003/breast.L/breast.L_end
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.L/breast.L_end
         weight: 0
-      - path: metarig/spine/spine.001/spine.002/spine.003/breast.R
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.R
         weight: 0
-      - path: metarig/spine/spine.001/spine.002/spine.003/breast.R/breast.R_end
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.R/breast.R_end
         weight: 0
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
         weight: 0
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
         weight: 0
-      - path: metarig/spine/spine.001/spine.002/spine.003/spine.004
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006
         weight: 1
-      - path: metarig/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006/spine.006_end
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006/spine.006_end
         weight: 0
-      - path: metarig/spine/thigh.L
+      - path: metarig/root/spine/thigh.L
         weight: 1
-      - path: metarig/spine/thigh.L/shin.L
+      - path: metarig/root/spine/thigh.L/shin.L
         weight: 1
-      - path: metarig/spine/thigh.L/shin.L/foot.L
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L
         weight: 1
-      - path: metarig/spine/thigh.L/shin.L/foot.L/heel.02.L
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/heel.02.L
         weight: 0
-      - path: metarig/spine/thigh.L/shin.L/foot.L/heel.02.L/heel.02.L_end
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/heel.02.L/heel.02.L_end
         weight: 0
-      - path: metarig/spine/thigh.L/shin.L/foot.L/toe.L
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/toe.L
         weight: 1
-      - path: metarig/spine/thigh.L/shin.L/foot.L/toe.L/toe.L_end
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/toe.L/toe.L_end
         weight: 0
-      - path: metarig/spine/thigh.R
+      - path: metarig/root/spine/thigh.R
         weight: 1
-      - path: metarig/spine/thigh.R/shin.R
+      - path: metarig/root/spine/thigh.R/shin.R
         weight: 1
-      - path: metarig/spine/thigh.R/shin.R/foot.R
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R
         weight: 1
-      - path: metarig/spine/thigh.R/shin.R/foot.R/heel.02.R
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/heel.02.R
         weight: 0
-      - path: metarig/spine/thigh.R/shin.R/foot.R/heel.02.R/heel.02.R_end
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/heel.02.R/heel.02.R_end
         weight: 0
-      - path: metarig/spine/thigh.R/shin.R/foot.R/toe.R
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/toe.R
         weight: 1
-      - path: metarig/spine/thigh.R/shin.R/foot.R/toe.R/toe.R_end
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/toe.R/toe.R_end
+        weight: 0
+      - path: Pants
+        weight: 0
+      - path: TestPawn
+        weight: 0
+      maskType: 0
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: metarig|Chilling
+      takeName: metarig|Chilling
+      firstFrame: 0
+      lastFrame: 240
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: board_rig
+        weight: 0
+      - path: board_rig/board_root
+        weight: 0
+      - path: board_rig/board_root/board
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.L
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.L/board.slot.IKtarget.L
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.L/board.slot.IKtarget.L/board.slot.IKtarget.L_end
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.R
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.R/board.slot.IKtarget.R
+        weight: 0
+      - path: board_rig/board_root/board/board.slot.R/board.slot.IKtarget.R/board.slot.IKtarget.R_end
+        weight: 0
+      - path: BoardPlaceholder
+        weight: 0
+      - path: Boot
+        weight: 0
+      - path: Coat
+        weight: 0
+      - path: Cube
+        weight: 0
+      - path: Hand
+        weight: 0
+      - path: metarig
+        weight: 1
+      - path: metarig/root
+        weight: 1
+      - path: metarig/root/spine
+        weight: 1
+      - path: metarig/root/spine/pelvis.L
+        weight: 0
+      - path: metarig/root/spine/pelvis.L/pelvis.L_end
+        weight: 0
+      - path: metarig/root/spine/pelvis.R
+        weight: 0
+      - path: metarig/root/spine/pelvis.R/pelvis.R_end
+        weight: 0
+      - path: metarig/root/spine/spine.001
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.L
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.L/breast.L_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.R
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/breast.R/breast.R_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.L/upper_arm.L/forearm.L/hand.L/hand.L_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/shoulder.R/upper_arm.R/forearm.R/hand.R/hand.R_end
+        weight: 0
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006
+        weight: 1
+      - path: metarig/root/spine/spine.001/spine.002/spine.003/spine.004/spine.005/spine.006/spine.006_end
+        weight: 0
+      - path: metarig/root/spine/thigh.L
+        weight: 1
+      - path: metarig/root/spine/thigh.L/shin.L
+        weight: 1
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L
+        weight: 1
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/heel.02.L
+        weight: 0
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/heel.02.L/heel.02.L_end
+        weight: 0
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/toe.L
+        weight: 1
+      - path: metarig/root/spine/thigh.L/shin.L/foot.L/toe.L/toe.L_end
+        weight: 0
+      - path: metarig/root/spine/thigh.R
+        weight: 1
+      - path: metarig/root/spine/thigh.R/shin.R
+        weight: 1
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R
+        weight: 1
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/heel.02.R
+        weight: 0
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/heel.02.R/heel.02.R_end
+        weight: 0
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/toe.R
+        weight: 1
+      - path: metarig/root/spine/thigh.R/shin.R/foot.R/toe.R/toe.R_end
         weight: 0
       - path: Pants
         weight: 0
@@ -626,7 +964,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: spine
-      position: {x: -0, y: 0.0552, z: 1.0099}
+      position: {x: -0, y: 0.055199996, z: 1.0099}
       rotation: {x: 0.79045546, y: -0, z: -0, w: 0.61251956}
       scale: {x: 1, y: 1.000001, z: 1.000001}
       transformModified: 1
@@ -636,7 +974,7 @@ ModelImporter:
       scale: {x: 1, y: 0.9999977, z: 0.9999975}
       transformModified: 1
     - name: spine.002
-      position: {x: -0, y: 0.13663666, z: 0.0000000026193447}
+      position: {x: -0, y: 0.13663664, z: 0.0000000026193447}
       rotation: {x: -0.07746417, y: -0, z: -0, w: 0.99699515}
       scale: {x: 1, y: 1, z: 0.9999999}
       transformModified: 1
@@ -656,7 +994,7 @@ ModelImporter:
       scale: {x: 1, y: 1.0000008, z: 1.0000011}
       transformModified: 1
     - name: spine.006
-      position: {x: -0, y: 0.06270123, z: -0.000000009313226}
+      position: {x: -0, y: 0.06270123, z: -0.000000009313225}
       rotation: {x: -0.09371201, y: -0, z: -0, w: 0.9955993}
       scale: {x: 1, y: 0.999999, z: 0.99999976}
       transformModified: 1
@@ -671,7 +1009,7 @@ ModelImporter:
       scale: {x: 1.0000026, y: 1.0000043, z: 1.000002}
       transformModified: 1
     - name: upper_arm.L
-      position: {x: -0.0077915424, y: 0.200791, z: -0.020384993}
+      position: {x: -0.007791542, y: 0.200791, z: -0.020384992}
       rotation: {x: 0.106728874, y: -0.7070215, z: 0.16546893, w: 0.67922723}
       scale: {x: 1.0000073, y: 1.0000017, z: 1.0000036}
       transformModified: 1
@@ -696,7 +1034,7 @@ ModelImporter:
       scale: {x: 1.0000026, y: 1.0000043, z: 1.000002}
       transformModified: 1
     - name: upper_arm.R
-      position: {x: 0.0077915424, y: 0.200791, z: -0.020384993}
+      position: {x: 0.007791542, y: 0.200791, z: -0.020384992}
       rotation: {x: 0.106728874, y: 0.7070215, z: -0.16546893, w: 0.67922723}
       scale: {x: 1.0000073, y: 1.0000017, z: 1.0000036}
       transformModified: 1
@@ -716,7 +1054,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: breast.L
-      position: {x: -0.1184, y: -0.0048813177, z: -0.04275686}
+      position: {x: -0.11839999, y: -0.0048813177, z: -0.04275686}
       rotation: {x: -0.000000054142056, y: 0.69693637, z: 0.71713305, w: -0.000000052617217}
       scale: {x: 1.000011, y: 1.0000024, z: 1.0000021}
       transformModified: 1
@@ -726,7 +1064,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: breast.R
-      position: {x: 0.1184, y: -0.0048813177, z: -0.04275686}
+      position: {x: 0.11839999, y: -0.0048813177, z: -0.04275686}
       rotation: {x: -0.000000054142056, y: 0.69693637, z: 0.71713305, w: -0.000000052617217}
       scale: {x: 1.000011, y: 1.0000024, z: 1.0000021}
       transformModified: 1
@@ -736,7 +1074,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: pelvis.L
-      position: {x: -0, y: 0.00000002142042, z: 0.000000007450581}
+      position: {x: -0, y: 0.000000021420417, z: 0.000000007450581}
       rotation: {x: -0.15245523, y: 0.7933306, z: 0.2855041, w: 0.51562726}
       scale: {x: 1.0000079, y: 1.0000014, z: 1.0000066}
       transformModified: 1
@@ -746,7 +1084,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: pelvis.R
-      position: {x: -0, y: 0.00000002142042, z: 0.000000007450581}
+      position: {x: -0, y: 0.000000021420417, z: 0.000000007450581}
       rotation: {x: -0.15245523, y: -0.7933306, z: -0.2855041, w: 0.51562726}
       scale: {x: 1.0000079, y: 1.0000014, z: 1.0000066}
       transformModified: 1
@@ -756,7 +1094,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: thigh.L
-      position: {x: -0.098, y: 0.07081852, z: 0.025942283}
+      position: {x: -0.09799999, y: 0.07081852, z: 0.02594228}
       rotation: {x: 0.9865149, y: -0, z: -0, w: 0.16367161}
       scale: {x: 1, y: 1.0000087, z: 1.0000058}
       transformModified: 1
@@ -781,7 +1119,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: heel.02.L
-      position: {x: 0.038, y: 0.019970208, z: 0.08799047}
+      position: {x: 0.038, y: 0.019970207, z: 0.08799046}
       rotation: {x: -0.679706, y: 0.67970604, z: -0.19493541, w: -0.19493538}
       scale: {x: 1.0000123, y: 1.0000044, z: 0.99999744}
       transformModified: 1
@@ -791,7 +1129,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: thigh.R
-      position: {x: 0.098, y: 0.07081852, z: 0.025942283}
+      position: {x: 0.09799999, y: 0.07081852, z: 0.02594228}
       rotation: {x: 0.9865149, y: -0, z: -0, w: 0.16367161}
       scale: {x: 1, y: 1.0000087, z: 1.0000058}
       transformModified: 1
@@ -816,7 +1154,7 @@ ModelImporter:
       scale: {x: 1, y: 1, z: 1}
       transformModified: 1
     - name: heel.02.R
-      position: {x: -0.038, y: 0.019970208, z: 0.08799047}
+      position: {x: -0.038, y: 0.019970207, z: 0.08799046}
       rotation: {x: -0.679706, y: -0.67970604, z: 0.19493541, w: -0.19493538}
       scale: {x: 1.0000123, y: 1.0000044, z: 0.99999744}
       transformModified: 1
