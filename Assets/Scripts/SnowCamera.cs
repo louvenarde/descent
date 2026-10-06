@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 using System.Collections;
 
 [ExecuteInEditMode]
@@ -23,7 +24,10 @@ public class SnowCamera : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        previousPlane.transform.position = transform.position - new Vector3(5.0f / 256.0f, 30, 5.0f / 256.0f);
+        float dx9Offset = 0;
+        if(SystemInfo.graphicsDeviceType == GraphicsDeviceType.Direct3D9)
+            dx9Offset = 5.0f / 256.0f; // *sigh* d3d9 has the awful half-pixel offset on texture coordinates, without this the snow trail will slide on their own
+        previousPlane.transform.position = transform.position - new Vector3(dx9Offset, 30, dx9Offset);
 
         //transform.position = follow.transform.position + new Vector3(0, 20, 0);
         transform.position = new Vector3(
