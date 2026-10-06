@@ -4,10 +4,10 @@ using UnityEngine;
 [Serializable]
 public class TerrainPieceInputData
 {
-    [Range(2, 5)]
+    [Range(2, 200)]
     public int nbQuadWidth = 5;
 
-    [Range(2, 5)]
+    [Range(2, 200)]
     public int nbQuadLength = 3;
 
     [Range(3, 50)]

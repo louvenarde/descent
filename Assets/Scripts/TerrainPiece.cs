@@ -10,6 +10,11 @@ using UnityEditor;
 
 public class TerrainPiece : MonoBehaviour
 {
+    [SerializeField]
+    List<MeshFilter> lodFilters;
+    [SerializeField]
+    List<Mesh> lodMeshes;
+
 #if UNITY_EDITOR
     [System.Serializable]
     public struct Connector
@@ -22,44 +27,41 @@ public class TerrainPiece : MonoBehaviour
         public List<Vector2> exitRow;
     }
 
-    private Mesh mesh;
-
-    public void Build(Nullable<Connector> entryConnector, TerrainPieceInputData inputData, BezierSpline spline, int index, out Connector exitConnector)
+    public void Build(TerrainGenerator.DescentTerrain.TerrainConnection entryConnector, TerrainPieceInputData inputData, BezierSpline spline, int index, out List<Connector> exitConnectors)
     {
+        exitConnectors = new List<Connector>();
+
+        for (int lod = 0; lod < lodFilters.Count; lod++) {
+            if(lodMeshes.Count <= lod)
+                lodMeshes.Add(new Mesh());
+
+            lodMeshes[lod].Clear();
+            Connector exitConnector;
+            if (entryConnector != null)
+                CreateMesh(lodMeshes[lod], entryConnector.outgoingConnectors[lod], inputData, spline, index, out exitConnector, Mathf.Pow(2, lod));
+            else
+                CreateMesh(lodMeshes[lod], null, inputData, spline, index, out exitConnector, Mathf.Pow(2, lod));
+            exitConnectors.Add(exitConnector);
+            lodFilters[lod].sharedMesh = lodMeshes[lod];
+        }
+
+        LODGroup lodGroup = gameObject.GetComponent<LODGroup>();
+        lodGroup.RecalculateBounds();
+
+        MeshCollider collider = gameObject.GetComponent<MeshCollider>();
+        if (!collider)
+            collider = gameObject.AddComponent<MeshCollider>();
+        collider.sharedMesh = lodMeshes[lodMeshes.Count - 1];
+    }
+
+    private Mesh CreateMesh(Mesh inMesh, Nullable<Connector> entryConnector, TerrainPieceInputData inputData, BezierSpline spline, int index, out Connector exitConnector, float subdivide = 1)
+    {
+        inMesh.Clear();
+
         exitConnector = new Connector();
         exitConnector.exitRow = new List<Vector2>();
 
         transform.position = spline.GetPoint(index / (float)spline.CurveCount);
-
-        MeshFilter filter = gameObject.GetComponent<MeshFilter>();
-        if (!filter)
-        {
-            filter = gameObject.AddComponent<MeshFilter>();
-        }
-
-        MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
-        if (!renderer)
-        {
-            gameObject.AddComponent<MeshRenderer>();
-        }
-
-        MeshCollider collider = gameObject.GetComponent<MeshCollider>();
-        if (!collider)
-        {
-            collider = gameObject.AddComponent<MeshCollider>();
-        }
-
-
-        Mesh inMesh;
-        {
-            if (!mesh)
-            {
-                mesh = new Mesh();
-            }
-
-            inMesh = mesh;
-            mesh.Clear();
-        }
 
         List<Vector3> points = new List<Vector3>();
         List<Vector2> uv0 = new List<Vector2>();
@@ -67,8 +69,8 @@ public class TerrainPiece : MonoBehaviour
 
         List<Vector3> lastRow = new List<Vector3>();
 
-        int nbQuadWidth = inputData.nbQuadWidth;
-        int nbQuadLength = inputData.nbQuadLength;
+        int nbQuadWidth = (int)(inputData.nbQuadWidth / subdivide);
+        int nbQuadLength = (int)(inputData.nbQuadLength / subdivide);
         float valleyDepth = inputData.valleyDepth;
         AnimationCurve valleyCurveNormalized = inputData.valleyCurveNormalized;
         float exitWidthMeters = inputData.exitWidthMeters;
@@ -118,7 +120,12 @@ public class TerrainPiece : MonoBehaviour
                     localPos.y = Mathf.Lerp(entryPoint.y, localPos.y, linkInfluence01);
                 }
 
-                float splineLocation = (index * nbQuadLength + vxZ) / (float)(spline.CurveCount * nbQuadLength);
+                int vxZSpline = vxZ;
+                // We extend a bit the start of the LOD1 mesh to create a little overlap, help filling the gaps for the outline shader during the transition between LOD0 & LOD1
+                // No need for LOD2+ because they are far away enough to not be noticable and it can cause issue with the collision mesh (based on LOD2)
+                if (vxZ == 0 && subdivide == 2)
+                    vxZSpline--;
+                float splineLocation = (index * nbQuadLength + vxZSpline) / (float)(spline.CurveCount * nbQuadLength);
                 Vector3 splinePos = spline.GetPoint(splineLocation);
                 Vector3 splineRight = spline.GetRight(splineLocation, transform.up);
                 Vector3 splineUp = spline.GetUp(splineLocation, transform.up);
@@ -146,13 +153,27 @@ public class TerrainPiece : MonoBehaviour
             for (int y = 0; y < nbQuadLength; y++)
             {
                 int n = x * nbVertLength + y;
-                integerTris.Add(n);
-                integerTris.Add(n + 1);
-                integerTris.Add(n + 1 + nbVertLength);
 
-                integerTris.Add(n);
-                integerTris.Add(n + 1 + nbVertLength);
-                integerTris.Add(n + nbVertLength);
+                if((x + y) % 2 == 0)
+                {
+                    integerTris.Add(n);
+                    integerTris.Add(n + 1);
+                    integerTris.Add(n + 1 + nbVertLength);
+
+                    integerTris.Add(n);
+                    integerTris.Add(n + 1 + nbVertLength);
+                    integerTris.Add(n + nbVertLength);
+                } 
+                else
+                {
+                    integerTris.Add(n);
+                    integerTris.Add(n + 1);
+                    integerTris.Add(n + nbVertLength);
+
+                    integerTris.Add(n + 1);
+                    integerTris.Add(n + 1 + nbVertLength);
+                    integerTris.Add(n + nbVertLength);
+                }
             }
         }
         inMesh.SetTriangles(integerTris, 0);
@@ -177,25 +198,24 @@ public class TerrainPiece : MonoBehaviour
             exitConnector.exitDirection = perpendicular;
         }
 
-        filter.sharedMesh = inMesh;
-        collider.sharedMesh = inMesh;
-
         exitConnector.exitAngle = 0f;
         exitConnector.exitWidth = exitWidthMeters;
         exitConnector.exitValleyDepth = valleyDepth;
+
+        return inMesh;
     }
 
     void OnDestroy()
     {
-        if (mesh)
-        {
-            Destroy(mesh);
-        }
+        // I don't think it is necessary, the resource tracking should cover this but I don't know how well it works in editor so just in case:
+        for (int i = 0; i < lodMeshes.Count; i++)
+            Destroy(lodMeshes[i]);
+        lodMeshes.Clear();
     }
 
     /*private void OnDrawGizmosSelected()
     {
-        if (mesh)
+        if (lodMeshes.Count > 0)
         {
             Gizmos.matrix = transform.localToWorldMatrix;
             Handles.matrix = transform.localToWorldMatrix;
@@ -203,6 +223,7 @@ public class TerrainPiece : MonoBehaviour
             // Display
             Gizmos.color = Color.magenta;
 
+            Mesh mesh = lodMeshes[lodMeshes.Count - 1];
             for (int i = 0; i < mesh.triangles.Length; i += 3)
             {
                 Vector3 a = mesh.vertices[mesh.triangles[i]];

@@ -19,13 +19,13 @@ public class TerrainGenerator : MonoBehaviour
     public BezierSpline spline;
 
     [System.Serializable]
-    private class DescentTerrain
+    public class DescentTerrain
     {
         [System.Serializable]
         public class TerrainConnection
         {
             public TerrainPiece piece;
-            public TerrainPiece.Connector outgoingConnector;
+            public List<TerrainPiece.Connector> outgoingConnectors;
         }
 
         public List<TerrainConnection> connections = new List<TerrainConnection>();
@@ -72,7 +72,7 @@ public class TerrainGenerator : MonoBehaviour
     {
         Clear();
 
-        TerrainPiece.Connector? previousConnector = null;
+        DescentTerrain.TerrainConnection previousConnector = null;
         for (int i = 0; i < terrainDefinition.Count; i++)
         {
             TerrainPiece pieceInst = (TerrainPiece)Instantiate(pieceExample, pieceExample.transform.parent);
@@ -81,10 +81,10 @@ public class TerrainGenerator : MonoBehaviour
             var connx = new DescentTerrain.TerrainConnection();
             connx.piece = pieceInst;
 
-            TerrainPiece.Connector connector;
-            connx.piece.Build(previousConnector, terrainDefinition[i], spline, i, out connector);
-            connx.outgoingConnector = connector;
-            previousConnector = connector;
+            List<TerrainPiece.Connector> connectors;
+            connx.piece.Build(previousConnector, terrainDefinition[i], spline, i, out connectors);
+            connx.outgoingConnectors = connectors;
+            previousConnector = connx;
 
             terrain.connections.Add(connx);
         }
@@ -136,21 +136,21 @@ public class TerrainGenerator : MonoBehaviour
             var connx = terrain.connections[i];
 
             Handles.color = Color.Lerp(Color.yellow, Color.red, 0.5f);
-            Handles.ArrowCap(0, connx.outgoingConnector.exitPoint, Quaternion.LookRotation(connx.outgoingConnector.exitDirection, Vector3.up), 1f);
+            Handles.ArrowCap(0, connx.outgoingConnectors[0].exitPoint, Quaternion.LookRotation(connx.outgoingConnectors[0].exitDirection, Vector3.up), 1f);
 
-            Vector3 exitCenter = connx.outgoingConnector.exitPoint;
+            Vector3 exitCenter = connx.outgoingConnectors[0].exitPoint;
             if(debugShowPlane)
             {
-                Vector3 normal = connx.outgoingConnector.exitDirection;
+                Vector3 normal = connx.outgoingConnectors[0].exitDirection;
                 Vector3 right = Vector3.Cross(Vector3.up, normal).normalized;
                 Vector3 up = Vector3.Cross(right, normal).normalized;
             
                 Vector3[] verts = new Vector3[]
                 {
-                    exitCenter - right * connx.outgoingConnector.exitWidth - up * connx.outgoingConnector.exitValleyDepth,
-                    exitCenter + right * connx.outgoingConnector.exitWidth - up * connx.outgoingConnector.exitValleyDepth,
-                    exitCenter + right * connx.outgoingConnector.exitWidth + up * connx.outgoingConnector.exitValleyDepth,
-                    exitCenter - right * connx.outgoingConnector.exitWidth + up * connx.outgoingConnector.exitValleyDepth
+                    exitCenter - right * connx.outgoingConnectors[0].exitWidth - up * connx.outgoingConnectors[0].exitValleyDepth,
+                    exitCenter + right * connx.outgoingConnectors[0].exitWidth - up * connx.outgoingConnectors[0].exitValleyDepth,
+                    exitCenter + right * connx.outgoingConnectors[0].exitWidth + up * connx.outgoingConnectors[0].exitValleyDepth,
+                    exitCenter - right * connx.outgoingConnectors[0].exitWidth + up * connx.outgoingConnectors[0].exitValleyDepth
                 };
 
                 Color c = new Color(1, 0, 1, 0.1f);
