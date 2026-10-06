@@ -287,6 +287,9 @@ public class PlayerController : MonoBehaviour
 #if UNITY_EDITOR
     [Header("Input mock")]
     [SerializeField]
+    private bool mock = false;
+
+    [SerializeField]
     private Vector2 leftStick;
 
     [SerializeField]
@@ -298,7 +301,7 @@ public class PlayerController : MonoBehaviour
         get
         {
 #if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!UnityEditor.EditorApplication.isPlaying || UnityEditor.EditorApplication.isPaused || mock)
             {
                 return Vector3.ClampMagnitude(leftStick, 1f);
             }
@@ -317,7 +320,7 @@ public class PlayerController : MonoBehaviour
         get
         {
 #if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying)
+            if (!UnityEditor.EditorApplication.isPlaying || UnityEditor.EditorApplication.isPaused || mock)
             {
                 return Vector3.ClampMagnitude(rightStick, 1f);
             }

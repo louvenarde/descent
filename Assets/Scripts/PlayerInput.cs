@@ -37,6 +37,11 @@ public abstract class PlayerInput : IDisposable
 
     public static PlayerInput MakeForPlatform(int index)
     {
+        if (Input.GetJoystickNames().Length <= 0)
+        {
+            return new KeyboardInputFallback(index);
+        }
+
         return new NativeUnityInput(index);
     }
 

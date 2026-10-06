@@ -7,6 +7,21 @@ public class PlayerAnimation : MonoBehaviour
     public class LegSkeleton
     {
         [SerializeField]
+        private bool placeThighs = true;
+
+        [SerializeField]
+        private bool placeShins = true;
+
+        [SerializeField]
+        private bool placeFeet = true;
+
+        [SerializeField]
+        private bool placeHeels = true;
+
+        [SerializeField]
+        private bool setLimbPositions = true;
+
+        [SerializeField]
         private Transform[] thighs = new Transform[PlayerController.FEET];
 
         [SerializeField]
@@ -18,13 +33,13 @@ public class PlayerAnimation : MonoBehaviour
         [SerializeField]
         private Transform[] heels = new Transform[PlayerController.FEET];
 
-        public void Place(Transform board, PlayerController.LegsPosture posture, bool setLimbPositions)
+        public void Place(Transform board, PlayerController.LegsPosture posture)
         {
             for (int i = 0; i < PlayerController.FEET; i++)
             {
                 int foot = i;
 
-                if (thighs[foot])
+                if (thighs[foot] && placeThighs)
                 {
                     thighs[foot].rotation = Quaternion.LookRotation(
                         board.TransformPoint
@@ -38,6 +53,8 @@ public class PlayerAnimation : MonoBehaviour
                         board.up
                     ) * Quaternion.Euler(90f, 0f, 0f);
 
+                    thighs[foot].localRotation *= Quaternion.Euler(0f, -90f, 0f);
+
                     if (setLimbPositions)
                     {
                         thighs[foot].position = board.TransformPoint
@@ -47,7 +64,7 @@ public class PlayerAnimation : MonoBehaviour
                     }
                 }
 
-                if (shins[foot])
+                if (shins[foot] && placeShins)
                 {
                     shins[foot].rotation = Quaternion.LookRotation(
                         board.TransformPoint
@@ -71,7 +88,7 @@ public class PlayerAnimation : MonoBehaviour
                     }
                 }
 
-                if (feet[foot])
+                if (feet[foot] && placeFeet)
                 {
                     feet[foot].rotation = Quaternion.LookRotation(
                         board.up,
@@ -79,7 +96,7 @@ public class PlayerAnimation : MonoBehaviour
 
                 }
 
-                if (heels[foot])
+                if (heels[foot] && placeHeels)
                 {
                     if (setLimbPositions)
                     {
@@ -107,7 +124,7 @@ public class PlayerAnimation : MonoBehaviour
     private Transform hipCenter;
 
     [SerializeField]
-    private bool setLimbPositions = false;
+    private Animator animator;
 
     void LateUpdate()
     {
@@ -120,7 +137,7 @@ public class PlayerAnimation : MonoBehaviour
                 );
             }
 
-            legs.Place(board, player.Posture, setLimbPositions);
+            legs.Place(board, player.Posture);
         }
     }
 
