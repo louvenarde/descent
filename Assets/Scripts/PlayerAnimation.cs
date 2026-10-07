@@ -133,6 +133,28 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField]
     private LegSkeleton legs;
 
+    public Vector3 GetFeetPosition(byte leg)
+    {
+        if (player)
+        {
+            return board.TransformPoint(
+                player.Posture.feetPosition[leg]
+            );
+        }
+
+        return Vector3.zero;
+    }
+
+    public Vector3 GetFeetDirection(byte leg)
+    {
+        if (player)
+        {
+            return player.Posture.feetDirections[leg] * player.Placement.Parameters.maxDegreesRotation;
+        }
+
+        return Vector3.zero;
+    }
+
     public Vector3 GetHipPosition(byte leg)
     {
         if (player)
