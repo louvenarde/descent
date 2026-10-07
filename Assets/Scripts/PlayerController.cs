@@ -287,6 +287,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private bool goofy = false;
 
+    [Header("Rider profile")]
+    [SerializeField]
+    private RiderParameters riderParameters;
+
 #if UNITY_EDITOR
     [Header("Input mock")]
     [SerializeField]
@@ -342,6 +346,10 @@ public class PlayerController : MonoBehaviour
     public bool Goofy { get { return goofy; } }
 
     public LegsPosture Posture { get { return posture; } }
+
+    public HumanoidParameters HumanoidSheet { get { return parameters; } }
+
+    public RiderParameters RiderSheet { get { return riderParameters; } }
 
     private PlayerInput input;
 

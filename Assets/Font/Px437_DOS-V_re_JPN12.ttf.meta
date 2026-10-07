@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 45a064df831f86c40acafe7d82cec3f6
+timeCreated: 1791380774
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 18
+  forceTextureCase: -1
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Px437 DOS/V re. JPN12
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 2
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
