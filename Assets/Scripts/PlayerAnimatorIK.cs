@@ -10,6 +10,11 @@ public class PlayerAnimatorIK : MonoBehaviour {
     [SerializeField]
     private PlayerAnimation playerAnimation;
 
+    [SerializeField]
+    private Transform leftFoot;
+    [SerializeField]
+    private Transform rightFoot;
+
 
     [SerializeField]
     private bool lookAt = true;
@@ -35,14 +40,29 @@ public class PlayerAnimatorIK : MonoBehaviour {
                 {
                     animator.SetLookAtWeight(0f, 0f, 0f);
                 }
-            }
+            }            
 
             if (ikPlacement)
             {
-                animator.SetIKPosition(AvatarIKGoal.LeftFoot, playerAnimation.GetHipPosition(PlayerController.LEFT));
-                animator.SetIKPosition(AvatarIKGoal.RightFoot, playerAnimation.GetHipPosition(PlayerController.RIGHT));
+                animator.SetIKPosition(AvatarIKGoal.LeftFoot, leftFoot.position);
+                animator.SetIKPosition(AvatarIKGoal.RightFoot, rightFoot.position);
                 animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
                 animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1f);
+
+                animator.SetIKRotation(AvatarIKGoal.LeftFoot, leftFoot.rotation);
+                animator.SetIKRotation(AvatarIKGoal.RightFoot, rightFoot.rotation);
+                animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
+                animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1f);
+
+                // Posture's bodyCenterPosition doesn't make any sense, average the hip for now
+                var bodLeft = playerAnimation.GetHipPosition(PlayerController.LEFT);
+                var bodRight = playerAnimation.GetHipPosition(PlayerController.RIGHT);
+                animator.bodyPosition = (bodLeft + bodRight) / 2.0f;
+
+
+                var avgFeetDir = playerAnimation.GetFeetDirection(PlayerController.LEFT) + playerAnimation.GetFeetDirection(PlayerController.RIGHT);
+                avgFeetDir /= 2.0f;
+                animator.bodyRotation *= Quaternion.Euler(avgFeetDir.x, 0, -avgFeetDir.z);
             }
             else
             {
