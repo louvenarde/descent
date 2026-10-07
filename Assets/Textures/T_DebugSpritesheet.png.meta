@@ -1,14 +1,16 @@
 fileFormatVersion: 2
 guid: f21624f8ee5b5b24d9f0ee8083e5fba7
-timeCreated: 1791380531
+timeCreated: 1791381538
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: SPR_StickHead
     21300002: SPR_StickBase
     21300004: SPR_Board
-    21300006: T_DirectionIndicator
-    21300008: T_InnerSideIndicator
+    21300006: SPR_DirectionIndicator
+    21300008: SPR_InnerSideIndicator
+    21300010: SPR_SpeedFill
+    21300012: SPR_SpeedStroke
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -34,7 +36,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
-    filterMode: -1
+    filterMode: 0
     aniso: 1
     mipBias: -1
     wrapMode: 1
@@ -97,7 +99,7 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: T_DirectionIndicator
+      name: SPR_DirectionIndicator
       rect:
         serializedVersion: 2
         x: 0
@@ -110,13 +112,39 @@ TextureImporter:
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: T_InnerSideIndicator
+      name: SPR_InnerSideIndicator
       rect:
         serializedVersion: 2
         x: 46
         y: 106
         width: 22
         height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SPR_SpeedFill
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 1
+        width: 35
+        height: 65
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SPR_SpeedStroke
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1
+        width: 35
+        height: 65
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

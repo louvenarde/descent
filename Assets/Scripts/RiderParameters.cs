@@ -12,9 +12,12 @@ public class RiderParameters : ScriptableObject
 
     public AnimationCurve backfootNegativeSpeedCurve = AnimationCurve.Linear(0f, 0.5f, 1f, 1f);
 
-    [SerializeField]
-    private float impactEffectMultiplier = 1f;
+    [Range(0.1f, 3f)]
+    public float impactEffectMultiplier = 1f;
 
-    [SerializeField]
-    private float frontStandaloneMovementPunishmentMultiplier = 1f;
+    [Range(0.0f, 3f)]
+    public float frontStandaloneMovementPunishmentMultiplier = 1f;
+
+    [Range(1f, 120f)]
+    public float legResponsiveness = 20f;
 }

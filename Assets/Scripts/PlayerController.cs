@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public class HumanoidPlacement
     {
         public HumanoidParameters Parameters { get { return controller.parameters; } }
-        public Transform Board { get { return controller.board; } }
+        public Transform Board { get { return controller.boardTransform; } }
         public Transform[] FeetSlots { get { return controller.feetSlots; } }
         public Vector2 LeftFootInput { get { return controller.LeftFootInput; } }
         public Vector2 RightFootInput { get { return controller.RightFootInput; } }
@@ -275,7 +275,10 @@ public class PlayerController : MonoBehaviour
     }
 
     [SerializeField]
-    private Transform board;
+    private Transform boardTransform;
+
+    [SerializeField]
+    private BoardController board;
 
     [SerializeField]
     private Transform[] feetSlots = new Transform[2];
@@ -343,7 +346,7 @@ public class PlayerController : MonoBehaviour
 
     public HumanoidPlacement Placement { get { return placement; } }
 
-    public bool Goofy { get { return goofy; } }
+    public bool IsGoofy { get { return goofy; } }
 
     public LegsPosture Posture { get { return posture; } }
 
@@ -351,11 +354,14 @@ public class PlayerController : MonoBehaviour
 
     public RiderParameters RiderSheet { get { return riderParameters; } }
 
-    private PlayerInput input;
+
+    private readonly Vector2[] delayedFootInput = new Vector2[PlayerController.FEET];
 
     private readonly LegsPosture posture = new LegsPosture();
 
     private HumanoidPlacement placement;
+
+    private PlayerInput input;
 
     private void Awake()
     {
@@ -367,12 +373,71 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         input.Refresh();
+
+        delayedFootInput[PlayerController.LEFT] = 
+            Vector2.Lerp(
+                delayedFootInput[PlayerController.LEFT], LeftFootInput, Mathf.Clamp01(Time.deltaTime * RiderSheet.legResponsiveness)
+            )
+        ;
+
+        delayedFootInput[PlayerController.RIGHT] =
+            Vector2.Lerp(
+                delayedFootInput[PlayerController.RIGHT], RightFootInput, Mathf.Clamp01(Time.deltaTime * RiderSheet.legResponsiveness)
+            )
+        ;
+
         posture.Refresh(placement);
 
 
 
     }
 
+    public Vector2 GetFrontFootDelayedInput()
+    {
+        return delayedFootInput[IsGoofy ? PlayerController.LEFT : PlayerController.RIGHT];
+    }
+
+    public Vector2 GetBackFootDelayedInput()
+    {
+        return delayedFootInput[IsGoofy ? PlayerController.RIGHT : PlayerController.LEFT];
+    }
+
+    public Vector2 GetFrontFootInput()
+    {
+        return IsGoofy ? LeftFootInput : RightFootInput;
+    }
+
+    public Vector2 GetBackFootInput()
+    {
+        return IsGoofy ? RightFootInput : LeftFootInput;
+    }
+
+
+    public float GetSpeedKPH()
+    {
+        if (board)
+        {
+            // TODO Planar speed based on transform.up to eliminate up axis speed
+            return (board.Velocity.magnitude / Time.deltaTime) * 3.6f;
+        }
+
+        return 0f;
+    }
+
+    public float GetStableSpeedAmount()
+    {
+        return GetSpeedKPH() / RiderSheet.maxStableSpeedKph;
+    }
+
+    public Vector3 GetSpeedDirection()
+    {
+        if (board)
+        {
+            return board.Velocity;
+        }
+
+        return Vector3.zero;
+    }
 
     private void GetSpeedFallMultiplier( )
     {
@@ -425,14 +490,14 @@ public class PlayerController : MonoBehaviour
 #if UNITY_EDITOR
     void OnDrawGizmos()
     {
-        if (!board)
+        if (!boardTransform)
         {
             return;
         }
 
         // Compute feet direction and positions
         UnityEditor.Handles.color = Color.magenta;
-        UnityEditor.Handles.ArrowCap(0, board.position + board.forward * 1f, board.rotation, 1f);
+        UnityEditor.Handles.ArrowCap(0, boardTransform.position + boardTransform.forward * 1f, boardTransform.rotation, 1f);
 
         HumanoidPlacement p = new HumanoidPlacement(this);
         posture.Refresh(p, drawGizmos: true);

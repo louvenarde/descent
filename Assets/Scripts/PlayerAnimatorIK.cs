@@ -42,7 +42,7 @@ public class PlayerAnimatorIK : MonoBehaviour {
                 }
             }            
 
-            if (ikPlacement)
+            if (ikPlacement && leftFoot && rightFoot)
             {
                 animator.SetIKPosition(AvatarIKGoal.LeftFoot, leftFoot.position);
                 animator.SetIKPosition(AvatarIKGoal.RightFoot, rightFoot.position);
