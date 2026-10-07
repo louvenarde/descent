@@ -49,7 +49,7 @@ public class PlayerAnimation : MonoBehaviour
                         board.TransformPoint
                         (
                             posture.hipsPosition[foot]
-                        ), 
+                        ),
                         board.up
                     ) * Quaternion.Euler(90f, 0f, 0f);
 
@@ -118,13 +118,44 @@ public class PlayerAnimation : MonoBehaviour
     private Transform board;
 
     [SerializeField]
-    private LegSkeleton legs;
-
-    [SerializeField]
     private Transform hipCenter;
 
     [SerializeField]
     private Animator animator;
+
+    [SerializeField]
+    private bool placeHipCenter = false;
+
+    [SerializeField]
+    private bool rotateHipCenter = false;
+
+
+    [SerializeField]
+    private LegSkeleton legs;
+
+    public Vector3 GetHipPosition(byte leg)
+    {
+        if (player)
+        {
+            return board.TransformPoint(
+                player.Posture.hipsPosition[leg]
+            );
+        }
+
+        return Vector3.zero;
+    }
+
+    public Vector3 GetKneePosition(byte leg)
+    {
+        if (player)
+        {
+            return board.TransformPoint(
+                player.Posture.kneesPosition[leg]
+            );
+        }
+
+        return Vector3.zero;
+    }
 
     void LateUpdate()
     {
@@ -132,9 +163,21 @@ public class PlayerAnimation : MonoBehaviour
         {
             if (hipCenter)
             {
-                hipCenter.position = board.TransformPoint(
-                    (player.Posture.hipsPosition[PlayerController.LEFT] + player.Posture.hipsPosition[PlayerController.RIGHT]) / 2f
-                );
+                if (placeHipCenter)
+                {
+                    hipCenter.position = board.TransformPoint(
+                        (player.Posture.hipsPosition[PlayerController.LEFT] + player.Posture.hipsPosition[PlayerController.RIGHT]) / 2f
+                    );
+                }
+                //player.Posture.hipDirectionVector
+                //if (rotateHipCenter)
+                //{
+                //    hipCenter.rotation = Quaternion.LookRotation(
+                //        board.TransformDirection(),
+                //        board.TransformDirection()
+                //    );
+
+                //}
             }
 
             legs.Place(board, player.Posture);
@@ -146,7 +189,7 @@ public class PlayerAnimation : MonoBehaviour
 #if UNITY_EDITOR
         if (player)
         {
-            for(int foot = 0; foot < PlayerController.FEET; foot++)
+            for (int foot = 0; foot < PlayerController.FEET; foot++)
             {
                 Gizmos.color = foot == PlayerController.LEFT ? Color.magenta : Color.cyan;
                 Gizmos.DrawSphere(board.TransformPoint(player.Posture.feetPosition[foot]), 0.05f);
@@ -155,7 +198,7 @@ public class PlayerAnimation : MonoBehaviour
 
             }
         }
-        
+
 #endif
     }
 }

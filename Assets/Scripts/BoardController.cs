@@ -30,6 +30,8 @@ public class BoardController : MonoBehaviour
 
     public bool IsGrounded { get { return groundHits > 0; } }
 
+    public Vector3 Velocity { get { return velocity; } }
+
     public float ControlFromVelocity01 { get { return Mathf.Clamp01(velocity.magnitude / profile.minimumControlVelocity); } }
 
     private Vector3 velocity;

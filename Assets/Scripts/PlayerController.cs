@@ -284,6 +284,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private HumanoidParameters parameters;
 
+    [SerializeField]
+    private bool goofy = false;
+
 #if UNITY_EDITOR
     [Header("Input mock")]
     [SerializeField]
@@ -336,6 +339,8 @@ public class PlayerController : MonoBehaviour
 
     public HumanoidPlacement Placement { get { return placement; } }
 
+    public bool Goofy { get { return goofy; } }
+
     public LegsPosture Posture { get { return posture; } }
 
     private PlayerInput input;
@@ -355,7 +360,59 @@ public class PlayerController : MonoBehaviour
     {
         input.Refresh();
         posture.Refresh(placement);
+
+
+
     }
+
+
+    private void GetSpeedFallMultiplier( )
+    {
+
+    }
+
+    private void GetSpeedMultiplierFromWeightDistribution()
+    {
+        float baseMultiplier = 1f;
+
+        Vector2 frontFoot = input.GetLeftDirection();
+        Vector2 backFoot = input.GetRightDirection();
+
+        if (goofy)
+        {
+            frontFoot *= -1;
+            backFoot *= -1;
+        }
+
+        bool frontFootNegative = frontFoot.x < 0f;
+        bool backFootNegative = backFoot.x < 0f;
+        float frontMultiplier = 1f;
+        float backMultiplier = 1f;
+        
+        if (frontFootNegative)
+        {
+             frontMultiplier = Mathf.Lerp(0.8f, 1f, Mathf.Clamp01(1f + frontFoot.x));
+        }
+        else
+        {
+             frontMultiplier = Mathf.Lerp(1f, 1.2f, frontFoot.x);
+        }
+
+
+
+        float backPositiveMultiplier = Mathf.Lerp(0.3f, 0.7f, 1f - frontFoot.x);
+        float backNegativeMultiplier = Mathf.Lerp(1f, 0.3f, frontFoot.x);
+
+        float multiplier = frontMultiplier * backMultiplier;
+    }
+
+
+
+
+
+
+
+
 
 #if UNITY_EDITOR
     void OnDrawGizmos()
