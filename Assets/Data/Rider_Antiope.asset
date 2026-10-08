@@ -63,3 +63,4 @@ MonoBehaviour:
   impactEffectMultiplier: 1
   frontStandaloneMovementPunishmentMultiplier: 1
   legResponsiveness: 20
+  torqueEffect: 600

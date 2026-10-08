@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     public class LegsPosture
     {
         public readonly Vector3[] feetDirections = new Vector3[FEET];
@@ -74,7 +75,7 @@ public class PlayerController : MonoBehaviour
                 Vector2 input = foot == LEFT ? data.LeftFootInput : data.RightFootInput;
                 Color color = foot == LEFT ? Color.red : Color.blue;
 
-                Vector3 rotatedInput = new Vector3(input.y, 0f, input.x);
+                Vector3 rotatedInput = new Vector3(input.x, 0f, input.y);
 
                 Vector3 inputLocalDirection = rotatedInput;
 
@@ -281,6 +282,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     [SerializeField]
     private Transform boardTransform;
 
@@ -317,18 +319,20 @@ public class PlayerController : MonoBehaviour
     {
         get
         {
+            Vector2 output = Vector2.zero;
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlaying || UnityEditor.EditorApplication.isPaused || mock)
             {
-                return Vector3.ClampMagnitude(leftStick, 1f);
+                output = Vector3.ClampMagnitude(leftStick, 1f);
             }
 #endif
             if (input != null)
             {
-                return input.GetLeftDirection();
+                output = input.GetLeftDirection();
+                output = RotateFoot(output);
             }
 
-            return Vector2.zero;
+            return output;
         }
     }
 
@@ -336,18 +340,21 @@ public class PlayerController : MonoBehaviour
     {
         get
         {
+            Vector2 output = Vector2.zero;
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlaying || UnityEditor.EditorApplication.isPaused || mock)
             {
-                return Vector3.ClampMagnitude(rightStick, 1f);
+                output = Vector3.ClampMagnitude(rightStick, 1f);
             }
 #endif
             if (input != null)
             {
-                return input.GetRightDirection();
+                output = input.GetRightDirection();
+                output = RotateFoot(output);
             }
 
-            return Vector2.zero;
+
+            return output;
         }
     }
 
@@ -360,6 +367,14 @@ public class PlayerController : MonoBehaviour
     public HumanoidParameters HumanoidSheet { get { return parameters; } }
 
     public RiderParameters RiderSheet { get { return riderParameters; } }
+
+    public Transform Board { get { return board.transform; } }
+
+    public readonly SmoothFloat smoothSpeedKPH = new SmoothFloat();
+
+    public readonly SmoothFloat smoothStableSpeedAmount = new SmoothFloat();
+
+    public readonly SmoothVector smoothSpeedDirection = new SmoothVector();
 
 
     private readonly Vector2[] delayedFootInput = new Vector2[PlayerController.FEET];
@@ -393,10 +408,13 @@ public class PlayerController : MonoBehaviour
             )
         ;
 
+        smoothSpeedKPH.Add(GetSpeedKPH());
+        smoothStableSpeedAmount.Add(GetStableSpeedAmount());
+        smoothSpeedDirection.Add(GetSpeedDirection());
+
         posture.Refresh(placement);
 
-
-
+        SendBodyEffectToBoard();
     }
 
     public Vector2 GetFrontFootDelayedInput()
@@ -446,17 +464,46 @@ public class PlayerController : MonoBehaviour
         return Vector3.zero;
     }
 
+    public string GetInputDump()
+    {
+        return input.Dump();
+    }
+
+    private void SendBodyEffectToBoard()
+    {
+        BoardController.BodyEffect bodyEffect = new BoardController.BodyEffect();
+        bodyEffect.torque = RiderSheet.torqueEffect * ((GetFrontFootDelayedInput().x - GetBackFootDelayedInput().x) * 0.5f);
+        board.SetBodyEffect(bodyEffect);
+    }
+
     private void GetSpeedFallMultiplier( )
     {
 
+    }
+
+    private Vector2 RotateFoot(Vector2 input)
+    {
+        Vector2 output = input;
+        if (IsGoofy)
+        {
+            output.y = input.x;
+            output.x = input.y;
+        }
+        else
+        {
+            output.x = input.y;
+            output.y = input.x;
+        }
+
+        return output;
     }
 
     private void GetSpeedMultiplierFromWeightDistribution()
     {
         float baseMultiplier = 1f;
 
-        Vector2 frontFoot = input.GetLeftDirection();
-        Vector2 backFoot = input.GetRightDirection();
+        Vector2 frontFoot = LeftFootInput;
+        Vector2 backFoot = RightFootInput;
 
         if (goofy)
         {

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: DefaultBoard
   m_EditorClassIdentifier: 
   sympatheticCorrectionForce: 10
-  maxEdgeFriction: 30
+  maxEdgeFriction: 469.03
   minimumControlVelocity: 0.2
   maxVisualTiltDegrees: 45

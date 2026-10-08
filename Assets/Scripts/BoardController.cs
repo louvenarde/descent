@@ -4,6 +4,13 @@ using UnityEngine.Analytics;
 
 public class BoardController : MonoBehaviour
 {
+    public struct BodyEffect
+    {
+        public float torque;
+        public float steepnessImpulse;
+        public float frictionIncrease;
+    }
+
     [SerializeField]
     private BoardProfile profile;
 
@@ -44,11 +51,18 @@ public class BoardController : MonoBehaviour
 
     private byte groundHits = 0;
 
+    private BodyEffect currentBodyEffect;
+
     private readonly Vector3[] hits = new Vector3[2];
 
     private PhysicMaterial canonicalPhysicalMaterial;
 
     private PhysicMaterial dynamicPhysicsMaterial;
+
+    public void SetBodyEffect(BodyEffect bodyEffect)
+    {
+        currentBodyEffect = bodyEffect;
+    }
 
     void Awake()
     {
@@ -82,9 +96,38 @@ public class BoardController : MonoBehaviour
 
         RefreshPhysicalMaterial();
 
+        AddTorqueFromBodyEffect();
+
+        BendThrustTowardsDirection();
+
         AddSympatheticAngularVelocity();
 
         lastPosition = transform.position;
+    }
+
+    private void AddTorqueFromBodyEffect()
+    {
+        boardBody.AddTorque(
+            boardBody.transform.up
+                * currentBodyEffect.torque
+                * ControlFromVelocity01
+                * Time.deltaTime,
+            ForceMode.Acceleration
+        );
+    }
+
+    private void BendThrustTowardsDirection()
+    {
+        Vector3 velocity = boardBody.velocity;
+        float y = velocity.y;
+
+        velocity =
+            Vector3.Lerp(velocity, 
+            velocity.magnitude * boardBody.transform.forward,
+            0.05f);
+
+        velocity.y = y;
+        boardBody.velocity = velocity;
     }
 
     private void AddSympatheticAngularVelocity()
