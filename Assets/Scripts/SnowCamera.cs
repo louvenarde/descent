@@ -3,14 +3,18 @@ using UnityEngine.Rendering;
 using System.Collections;
 
 [ExecuteInEditMode]
-public class SnowCamera : MonoBehaviour {
-    public GameObject follow;
-    public MeshRenderer previousPlane;
-    public Material prevMaterial;
+public class SnowCamera : MonoBehaviour
+{
+    [SerializeField]
+    private GameObject follow;
+    [SerializeField]
+    private MeshRenderer previousPlane;
 
-    public RenderTexture prevTarget = null;
-    public RenderTexture target;
-    public Camera cam;
+    private Material prevMaterial;
+
+    private RenderTexture prevTarget = null;
+    private RenderTexture target;
+    private Camera cam;
 
 	// Use this for initialization
 	void Start ()
