@@ -40,6 +40,9 @@ public class DebugPlayerInfoUI : MonoBehaviour
     private RectTransform innerSideIndicator;
 
     [SerializeField]
+    private TextMeshProUGUI velocityAngleIndicator;
+
+    [SerializeField]
     private RectTransform velocityDirectionIndicator;
 
     [SerializeField]
@@ -57,9 +60,9 @@ public class DebugPlayerInfoUI : MonoBehaviour
                 Vector3.forward +
                 Vector3.right * (controller.IsGoofy ? -1 : 1);
 
-            float stableSpeedAmount = controller.GetStableSpeedAmount();
+            float stableSpeedAmount = controller.smoothStableSpeedAmount;
 
-            speedText.text = controller.GetSpeedKPH().ToString("n0") + " km/h";
+            speedText.text = ((float)controller.smoothSpeedKPH).ToString("n0") + " km/h";
             speedTextPercent.text = (stableSpeedAmount * 100).ToString("n0") + "%";
             speedMultiplierText.text = "x1.00"; // TODO
 
@@ -67,8 +70,9 @@ public class DebugPlayerInfoUI : MonoBehaviour
 
             fallGauge.fillAmount = 0f; // TODO
 
-            float angle = Vector3.Angle(controller.transform.forward, controller.GetSpeedDirection());
+            float angle = MathsToolkit.SignedAngle(controller.Board.forward, controller.smoothSpeedDirection, -controller.Board.up);
             velocityDirectionIndicator.localEulerAngles = Vector3.forward * angle;
+            velocityAngleIndicator.text = angle.ToString("n0") + "°";
 
             frontStick.rectTransform.localPosition =
                 Vector2.Scale(controller.GetFrontFootInput(), frontStick.rectTransform.sizeDelta) * 0.5f;
@@ -82,7 +86,7 @@ public class DebugPlayerInfoUI : MonoBehaviour
             backStickDelayed.rectTransform.localPosition =
                 Vector2.Scale(controller.GetBackFootDelayedInput(), backStickDelayed.rectTransform.sizeDelta) * 0.5f;
 
-            playerProfileDebugText.text = controller.HumanoidSheet.name + "\n" + controller.RiderSheet.name;
+            playerProfileDebugText.text = controller.GetInputDump() + "\n" + controller.HumanoidSheet.name + "\n" + controller.RiderSheet.name;
         }
     }
 

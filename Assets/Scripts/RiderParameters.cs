@@ -20,4 +20,7 @@ public class RiderParameters : ScriptableObject
 
     [Range(1f, 120f)]
     public float legResponsiveness = 20f;
+
+    //[Range()]
+    public float torqueEffect = 100f;
 }
