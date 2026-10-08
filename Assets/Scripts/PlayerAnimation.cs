@@ -133,6 +133,13 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField]
     private LegSkeleton legs;
 
+    public Vector3 GetBodyPosition()
+    {
+        return board.TransformPoint(
+            player.Posture.bodyCenterPosition
+        );
+    }
+
     public Vector3 GetFeetPosition(byte leg)
     {
         if (player)
@@ -217,8 +224,9 @@ public class PlayerAnimation : MonoBehaviour
                 Gizmos.DrawSphere(board.TransformPoint(player.Posture.feetPosition[foot]), 0.05f);
                 Gizmos.DrawSphere(board.TransformPoint(player.Posture.hipsPosition[foot]), 0.05f);
                 Gizmos.DrawSphere(board.TransformPoint(player.Posture.kneesPosition[foot]), 0.05f);
-
             }
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(board.TransformPoint(player.Posture.bodyCenterPosition), 0.05f);
         }
 
 #endif

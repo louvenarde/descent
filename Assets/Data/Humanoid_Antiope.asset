@@ -11,10 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c36b07acc493f0d48bf486e53dc3e9b1, type: 3}
   m_Name: Humanoid_Antiope
   m_EditorClassIdentifier: 
-  thighLength: 0.27
-  ankleLength: 0.57
-  hipWidth: 0.48
-  minFlex01: 0.594
-  maxFlex01: 0.978
-  baseFlex01: 0.893
-  maxDegreesRotation: 19.8
+  thighLength: 0.3
+  ankleLength: 0.45
+  hipsToBodyCenterDistance: 0.2
+  centerOfMassOffset: -0.08
+  hipWidth: 0.3
+  minFlex01: 0.7
+  maxFlex01: 0.95
+  baseFlex01: 0.85
+  maxDegreesRotation: 14

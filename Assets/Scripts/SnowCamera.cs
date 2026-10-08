@@ -15,7 +15,7 @@ public class SnowCamera : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        prevMaterial = new Material(previousPlane.sharedMaterial);
+        prevMaterial = new Material(Shader.Find("Unlit/Texture"));
         previousPlane.sharedMaterial = prevMaterial;
 
         cam = GetComponent<Camera>();
