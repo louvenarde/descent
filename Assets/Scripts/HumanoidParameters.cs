@@ -7,6 +7,10 @@ public class HumanoidParameters : ScriptableObject
 
     public float ankleLength = 0.45f;
 
+    public float hipsToBodyCenterDistance = 0.1f;
+
+    public float centerOfMassOffset = 0.1f;
+
     public float hipWidth = 0.22f;
 
 

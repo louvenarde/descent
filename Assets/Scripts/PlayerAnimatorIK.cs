@@ -54,11 +54,7 @@ public class PlayerAnimatorIK : MonoBehaviour {
                 animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
                 animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1f);
 
-                // Posture's bodyCenterPosition doesn't make any sense, average the hip for now
-                var bodLeft = playerAnimation.GetHipPosition(PlayerController.LEFT);
-                var bodRight = playerAnimation.GetHipPosition(PlayerController.RIGHT);
-                animator.bodyPosition = (bodLeft + bodRight) / 2.0f;
-
+                animator.bodyPosition = playerAnimation.GetBodyPosition();
 
                 var avgFeetDir = playerAnimation.GetFeetDirection(PlayerController.LEFT) + playerAnimation.GetFeetDirection(PlayerController.RIGHT);
                 avgFeetDir /= 2.0f;

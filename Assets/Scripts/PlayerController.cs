@@ -51,8 +51,9 @@ public class PlayerController : MonoBehaviour
             RefreshFeetPlacement(data, drawGizmos);
             RefreshHipDirection(data, drawGizmos);
             RefreshLegsLength(data, drawGizmos);
-            RefreshBodyCenterPosition(data, drawGizmos);
+            RefreshBodyCenterPositionYZ(data, drawGizmos);
             RefreshHipsPosition(data, drawGizmos);
+            RefreshBodyCenterPositionX(data, drawGizmos);
             RefreshKneesPlacement(data, drawGizmos);
 
 #if UNITY_EDITOR
@@ -141,7 +142,7 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        private void RefreshBodyCenterPosition(HumanoidPlacement data, bool drawGizmos = false)
+        private void RefreshBodyCenterPositionYZ(HumanoidPlacement data, bool drawGizmos = false)
         {
             // Compute body center position as the intersection of leg lengths
             {
@@ -152,20 +153,21 @@ public class PlayerController : MonoBehaviour
                     out a1,
                     out a2);
 
-                bodyCenterPosition = a2;
+                bodyCenterPosition.z = a2.z;
 
                 float up = (legsLength[LEFT] + legsLength[RIGHT]) -
                     (feetPosition[LEFT] - feetPosition[RIGHT]).magnitude;
-                bodyCenterPosition.y = up;
+                bodyCenterPosition.y = up + data.Parameters.hipsToBodyCenterDistance;
 
+                // the X position is not defined at this point because the hips are not placed yet
 #if UNITY_EDITOR
                 if (drawGizmos)
                 {
                     //Gizmos.color = Color.yellow;
-                    //Gizmos.DrawWireSphere(board.TransformPoint(a2), 0.1f);
+                    //Gizmos.DrawWireSphere(data.Board.TransformPoint(a2), 0.1f);
 
                     //Gizmos.color = Color.gray;
-                    //Gizmos.DrawWireSphere(board.TransformPoint(a1), 0.1f);
+                    //Gizmos.DrawWireSphere(data.Board.TransformPoint(a1), 0.1f);
                 }
 #endif
             }
@@ -176,7 +178,7 @@ public class PlayerController : MonoBehaviour
             for (int foot = 0; foot < FEET; foot++)
             {
                 Quaternion leanRot = Quaternion.Euler(0f, 0f, -data.Parameters.maxDegreesRotation * feetDirections[foot].x);
-                float upLength = bodyCenterPosition.y;
+                float upLength = bodyCenterPosition.y - data.Parameters.hipsToBodyCenterDistance;
 
                 Vector3 boardUp = Vector3.up * upLength;
                 boardUp.z = bodyCenterPosition.z + data.Parameters.hipWidth * 0.5f * (foot == RIGHT ? 1 : -1);
@@ -201,14 +203,19 @@ public class PlayerController : MonoBehaviour
                 }
 #endif
             }
+        }
 
+        private void RefreshBodyCenterPositionX(HumanoidPlacement data, bool drawGizmos = false)
+        {
+            float centerOfMass = 0;
+            for (int foot = 0; foot < FEET; foot++)
+                centerOfMass += hipsPosition[foot].x;
+
+            bodyCenterPosition.x = centerOfMass / FEET + data.Parameters.centerOfMassOffset;
         }
 
         private void RefreshKneesPlacement(HumanoidPlacement data, bool drawGizmos = false)
         {
-
-
-
             for (int foot = 0; foot < FEET; foot++)
             {
                 Color color = foot == LEFT ? Color.red : Color.blue;
