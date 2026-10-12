@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerAnimation : MonoBehaviour
 {
@@ -111,17 +112,55 @@ public class PlayerAnimation : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private PlayerController player;
+    [System.Serializable]
+    public class Ragdoll
+    {
+        [System.Serializable]
+        public class RagdollBodyPart
+        {
+            public Rigidbody body;
+            public Collider collider;
 
-    [SerializeField]
-    private Transform board;
+            public void Activate()
+            {
+                body.isKinematic = false;
+                collider.enabled = true;
+            }
+
+            public void Deactivate()
+            {
+                body.isKinematic = true;
+                collider.enabled = false;
+            }
+        }
+
+        public RagdollBodyPart[] parts;
+
+        public void Activate()
+        {
+            for(int i = 0; i < parts.Length; i++)
+            {
+                parts[i].Activate();
+            }
+        }
+
+        public void Deactivate()
+        {
+            for (int i = 0; i < parts.Length; i++)
+            {
+                parts[i].Deactivate();
+            }
+        }
+    }
 
     [SerializeField]
     private Transform hipCenter;
 
     [SerializeField]
     private Animator animator;
+
+    [SerializeField]
+    private Ragdoll ragdoll;
 
     [SerializeField]
     private bool placeHipCenter = false;
@@ -133,19 +172,67 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField]
     private LegSkeleton legs;
 
+    private PlayerController.LegsPosture posture;
+
+    private PlayerController.HumanoidPlacement placement;
+
+    private Transform board;
+
+    private bool isFallen;
+
+    public void SetPosture(PlayerController.LegsPosture posture, PlayerController.HumanoidPlacement placement, Transform board, bool isFalling)
+    {
+        this.posture = posture;
+        this.placement = placement;
+        this.board = board;
+
+        if (isFalling != isFallen)
+        {
+            if (isFalling)
+            {
+                ragdoll.Activate();
+                animator.enabled = false;
+            }
+            else
+            {
+                ragdoll.Deactivate();
+                animator.enabled = true;
+            }
+
+            isFallen = isFalling;
+        }
+    }
+
+    public Vector3 GetCameraTarget()
+    {
+        if (isFallen && ragdoll != null && ragdoll.parts.Length > 0)
+        {
+            return ragdoll.parts[0].body.position;
+        }
+        else
+        {
+            return GetBodyPosition();
+        }
+    }
+
     public Vector3 GetBodyPosition()
     {
-        return board.TransformPoint(
-            player.Posture.bodyCenterPosition
-        );
+        if (posture != null && board)
+        {
+            return board.TransformPoint(
+                posture.bodyCenterPosition
+            );
+        }
+
+        return transform.position;
     }
 
     public Vector3 GetFeetPosition(byte leg)
     {
-        if (player)
+        if (posture != null)
         {
             return board.TransformPoint(
-                player.Posture.feetPosition[leg]
+                posture.feetPosition[leg]
             );
         }
 
@@ -154,9 +241,9 @@ public class PlayerAnimation : MonoBehaviour
 
     public Vector3 GetFeetDirection(byte leg)
     {
-        if (player)
+        if (posture != null)
         {
-            return player.Posture.feetDirections[leg] * player.Placement.Parameters.maxDegreesRotation;
+            return posture.feetDirections[leg] * placement.Parameters.maxDegreesRotation;
         }
 
         return Vector3.zero;
@@ -164,10 +251,10 @@ public class PlayerAnimation : MonoBehaviour
 
     public Vector3 GetHipPosition(byte leg)
     {
-        if (player)
+        if (posture != null)
         {
             return board.TransformPoint(
-                player.Posture.hipsPosition[leg]
+                posture.hipsPosition[leg]
             );
         }
 
@@ -176,10 +263,10 @@ public class PlayerAnimation : MonoBehaviour
 
     public Vector3 GetKneePosition(byte leg)
     {
-        if (player)
+        if (posture != null)
         {
             return board.TransformPoint(
-                player.Posture.kneesPosition[leg]
+                posture.kneesPosition[leg]
             );
         }
 
@@ -188,45 +275,75 @@ public class PlayerAnimation : MonoBehaviour
 
     void LateUpdate()
     {
-        if (player && board)
+        if (placement != null && posture != null && board)
         {
             if (hipCenter)
             {
                 if (placeHipCenter)
                 {
                     hipCenter.position = board.TransformPoint(
-                        (player.Posture.hipsPosition[PlayerController.LEFT] + player.Posture.hipsPosition[PlayerController.RIGHT]) / 2f
+                        (posture.hipsPosition[PlayerController.LEFT] + posture.hipsPosition[PlayerController.RIGHT]) / 2f
                     );
                 }
-                //player.Posture.hipDirectionVector
-                //if (rotateHipCenter)
-                //{
-                //    hipCenter.rotation = Quaternion.LookRotation(
-                //        board.TransformDirection(),
-                //        board.TransformDirection()
-                //    );
-
-                //}
             }
 
-            legs.Place(board, player.Posture);
+            legs.Place(board, posture);
         }
     }
+
+#if UNITY_EDITOR
+
+
+    [ContextMenu("Grab bones")]
+    private void GrabBones()
+    {
+        if (animator)
+        {
+            var root = animator.transform.FindChild("metarig").FindChild("root");
+
+            if (root)
+            {
+                List<Ragdoll.RagdollBodyPart> parts = new List<Ragdoll.RagdollBodyPart>();
+                var colliders = root.gameObject.GetComponentsInChildren<Collider>();
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    var col = colliders[i];
+                    var body = colliders[i].GetComponent<Rigidbody>();
+
+                    if (body)
+                    {
+                        Ragdoll.RagdollBodyPart part = new Ragdoll.RagdollBodyPart()
+                        {
+                            body = body,
+                            collider = col
+                        };
+
+                        part.Deactivate();
+                        parts.Add(part);
+                    }
+
+                }
+
+                this.ragdoll.parts = parts.ToArray();
+            }
+        }
+    }
+#endif
 
     void OnDrawGizmosSelected()
     {
 #if UNITY_EDITOR
-        if (player)
+        if (posture != null)
         {
             for (int foot = 0; foot < PlayerController.FEET; foot++)
             {
                 Gizmos.color = foot == PlayerController.LEFT ? Color.magenta : Color.cyan;
-                Gizmos.DrawSphere(board.TransformPoint(player.Posture.feetPosition[foot]), 0.05f);
-                Gizmos.DrawSphere(board.TransformPoint(player.Posture.hipsPosition[foot]), 0.05f);
-                Gizmos.DrawSphere(board.TransformPoint(player.Posture.kneesPosition[foot]), 0.05f);
+                Gizmos.DrawSphere(board.TransformPoint(posture.feetPosition[foot]), 0.05f);
+                Gizmos.DrawSphere(board.TransformPoint(posture.hipsPosition[foot]), 0.05f);
+                Gizmos.DrawSphere(board.TransformPoint(posture.kneesPosition[foot]), 0.05f);
             }
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(board.TransformPoint(player.Posture.bodyCenterPosition), 0.05f);
+            Gizmos.DrawSphere(board.TransformPoint(posture.bodyCenterPosition), 0.05f);
         }
 
 #endif

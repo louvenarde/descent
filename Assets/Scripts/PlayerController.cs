@@ -292,6 +292,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Transform[] feetSlots = new Transform[2];
 
+    [SerializeField]
+    private PlayerAnimation playerAnimation;
+
     [Header("Humanoid")]
     [SerializeField]
     private HumanoidParameters parameters;
@@ -362,6 +365,8 @@ public class PlayerController : MonoBehaviour
 
     public bool IsGoofy { get { return goofy; } }
 
+    public bool IsFalling { get { return isFalling; } }
+
     public LegsPosture Posture { get { return posture; } }
 
     public HumanoidParameters HumanoidSheet { get { return parameters; } }
@@ -385,6 +390,8 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInput input;
 
+    private bool isFalling;
+
     private void Awake()
     {
         placement = new HumanoidPlacement(this);
@@ -395,6 +402,11 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         input.Refresh();
+
+        if (input.AButton())
+        {
+            isFalling = true; // Debug only
+        }
 
         delayedFootInput[PlayerController.LEFT] = 
             Vector2.Lerp(
@@ -415,6 +427,7 @@ public class PlayerController : MonoBehaviour
         posture.Refresh(placement);
 
         SendBodyEffectToBoard();
+        SendPostureToAnimCharacter();
     }
 
     public Vector2 GetFrontFootDelayedInput()
@@ -474,6 +487,14 @@ public class PlayerController : MonoBehaviour
         return input.Dump();
     }
 
+    private void SendPostureToAnimCharacter()
+    {
+        if (playerAnimation)
+        {
+            playerAnimation.SetPosture(posture, placement, board.transform, IsFalling);
+        }
+    }
+
     private void SendBodyEffectToBoard()
     {
         Vector2 front = GetFrontFootDelayedInput();
@@ -486,6 +507,8 @@ public class PlayerController : MonoBehaviour
             RiderSheet.torqueControlFromVelocityAmount.Evaluate(GetStableSpeedAmount());
         bodyEffect.tiltSide = RiderSheet.tiltEffectMultiplier * front.x;
         bodyEffect.steepnessVelocityMultiplier = (GetSpeedMultiplierFromWeightDistribution() - 1f) * RiderSheet.weightSpeedBoostKmh;
+
+        bodyEffect.isFallen = IsFalling;
 
         board.SetBodyEffect(bodyEffect);
     }
@@ -557,6 +580,12 @@ public class PlayerController : MonoBehaviour
 
 
 #if UNITY_EDITOR
+    [ContextMenu("ForceRagdoll")]
+    private void ForceRagdoll()
+    {
+        isFalling = true;
+    }
+
     void OnDrawGizmos()
     {
         if (!boardTransform)

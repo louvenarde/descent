@@ -410,7 +410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da9c580aa8fc3f74d9e02c8909d373b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 1175185692}
+  playerAnim: {fileID: 1434269205}
   debugMaterial: {fileID: 2100000, guid: 3b3d810cec15c4443a192726fa5efe2c, type: 2}
   cameraDistance: 3
   cameraHeight: 2
@@ -793,16 +793,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 114000012614347074, guid: f16a79f5050d66a408ca6c3f22a9e8aa,
-        type: 2}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 1175185692}
-    - target: {fileID: 114000012614347074, guid: f16a79f5050d66a408ca6c3f22a9e8aa,
-        type: 2}
-      propertyPath: board
-      value: 
-      objectReference: {fileID: 1445387037}
     - target: {fileID: 114000014161767292, guid: f16a79f5050d66a408ca6c3f22a9e8aa,
         type: 2}
       propertyPath: leftFoot
@@ -848,6 +838,7 @@ MonoBehaviour:
   feetSlots:
   - {fileID: 1055507637}
   - {fileID: 657699449}
+  playerAnimation: {fileID: 1434269205}
   parameters: {fileID: 11400000, guid: e879e96c56738aa42bd87a0a1e25e57b, type: 2}
   goofy: 0
   riderParameters: {fileID: 11400000, guid: af5657f4c6a15924b9d9da2d7b7b7b8b, type: 2}
@@ -869,6 +860,12 @@ Transform:
   - {fileID: 1086462594}
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!114 &1434269205 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000012614347074, guid: f16a79f5050d66a408ca6c3f22a9e8aa,
+    type: 2}
+  m_PrefabInternal: {fileID: 1152745347}
+  m_Script: {fileID: 11500000, guid: 11950b93cd1b4a943b1fd68ebf8a551c, type: 3}
 --- !u!1 &1445387036
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerCamera : MonoBehaviour {
 
     [SerializeField]
-    private PlayerController controller;
+    private PlayerAnimation playerAnim;
 
     [SerializeField]
     private Material debugMaterial;
@@ -17,7 +17,7 @@ public class PlayerCamera : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        Vector3 target = controller.Placement.Board.position;
+        Vector3 target = playerAnim.GetCameraTarget();
         transform.LookAt(target);
 
         Vector3 direction = (transform.position - target);
@@ -25,6 +25,7 @@ public class PlayerCamera : MonoBehaviour {
         transform.position = direction.normalized * cameraDistance + target + cameraHeight * Vector3.up;
     }
 
+    /*
     private void OnPostRender()
     {
 #if UNITY_EDITOR
@@ -66,5 +67,6 @@ public class PlayerCamera : MonoBehaviour {
         }
 
     }
+    */
 
 }

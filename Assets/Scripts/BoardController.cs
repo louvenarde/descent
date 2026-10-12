@@ -10,6 +10,7 @@ public class BoardController : MonoBehaviour
         public float steepnessVelocityMultiplier;
         public float frictionIncrease;
         public float tiltSide;
+        public bool isFallen;
     }
 
     [SerializeField]
@@ -121,21 +122,31 @@ public class BoardController : MonoBehaviour
     {
         velocity = transform.position - lastPosition;
 
-        PlaceOnGround();
+        if (currentBodyEffect.isFallen)
+        {
+            // Do nothing
+            boardBody.isKinematic = true;
+        }
+        else
+        {
+            boardBody.isKinematic = false;
 
-        RefreshMaths();
+            PlaceOnGround();
 
-        RefreshTilt();
+            RefreshMaths();
 
-        RefreshPhysicalMaterial();
+            RefreshTilt();
 
-        AddTorqueFromBodyEffect();
+            RefreshPhysicalMaterial();
 
-        //BendThrustTowardsDirection();
+            AddTorqueFromBodyEffect();
 
-        ModifySpeedFromBodyEffect();
+            //BendThrustTowardsDirection();
 
-        AddSympatheticAngularVelocity();
+            ModifySpeedFromBodyEffect();
+
+            AddSympatheticAngularVelocity();
+        }
 
         lastPosition = transform.position;
     }
