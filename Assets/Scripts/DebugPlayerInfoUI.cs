@@ -46,6 +46,9 @@ public class DebugPlayerInfoUI : MonoBehaviour
     private RectTransform velocityDirectionIndicator;
 
     [SerializeField]
+    private TextMeshProUGUI boardDebugText;
+
+    [SerializeField]
     private TextMeshProUGUI playerProfileDebugText;
 
     void Update()
@@ -64,7 +67,7 @@ public class DebugPlayerInfoUI : MonoBehaviour
 
             speedText.text = ((float)controller.smoothSpeedKPH).ToString("n0") + " km/h";
             speedTextPercent.text = (stableSpeedAmount * 100).ToString("n0") + "%";
-            speedMultiplierText.text = "x1.00"; // TODO
+            speedMultiplierText.text = "x" + controller.GetSpeedMultiplierFromWeightDistribution().ToString("n2"); 
 
             speedGauge.fillAmount = stableSpeedAmount;
 
@@ -86,7 +89,8 @@ public class DebugPlayerInfoUI : MonoBehaviour
             backStickDelayed.rectTransform.localPosition =
                 Vector2.Scale(controller.GetBackFootDelayedInput(), backStickDelayed.rectTransform.sizeDelta) * 0.5f;
 
-            playerProfileDebugText.text = controller.GetInputDump() + "\n" + controller.HumanoidSheet.name + "\n" + controller.RiderSheet.name;
+            boardDebugText.text = controller.GetBoardDump() + "\n" + controller.HumanoidSheet.name + "\n" + controller.RiderSheet.name;
+            playerProfileDebugText.text = controller.GetInputDump() ;
         }
     }
 

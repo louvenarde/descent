@@ -464,6 +464,11 @@ public class PlayerController : MonoBehaviour
         return Vector3.zero;
     }
 
+    public string GetBoardDump()
+    {
+        return board.Dump();
+    }
+
     public string GetInputDump()
     {
         return input.Dump();
@@ -471,8 +476,17 @@ public class PlayerController : MonoBehaviour
 
     private void SendBodyEffectToBoard()
     {
+        Vector2 front = GetFrontFootDelayedInput();
+        Vector2 back = GetBackFootDelayedInput();
+
         BoardController.BodyEffect bodyEffect = new BoardController.BodyEffect();
-        bodyEffect.torque = RiderSheet.torqueEffect * ((GetFrontFootDelayedInput().x - GetBackFootDelayedInput().x) * 0.5f);
+        bodyEffect.torque = 
+            RiderSheet.torqueEffect *
+            ((front.x + front.x * Mathf.Abs(back.x)) * 0.5f) *
+            RiderSheet.torqueControlFromVelocityAmount.Evaluate(GetStableSpeedAmount());
+        bodyEffect.tiltSide = RiderSheet.tiltEffectMultiplier * front.x;
+        bodyEffect.steepnessVelocityMultiplier = (GetSpeedMultiplierFromWeightDistribution() - 1f) * RiderSheet.weightSpeedBoostKmh;
+
         board.SetBodyEffect(bodyEffect);
     }
 
@@ -498,39 +512,40 @@ public class PlayerController : MonoBehaviour
         return output;
     }
 
-    private void GetSpeedMultiplierFromWeightDistribution()
+    public float GetSpeedMultiplierFromWeightDistribution()
     {
         float baseMultiplier = 1f;
 
-        Vector2 frontFoot = LeftFootInput;
-        Vector2 backFoot = RightFootInput;
+        Vector2 frontFoot = GetFrontFootDelayedInput();
+        Vector2 backFoot = GetBackFootDelayedInput();
 
-        if (goofy)
-        {
-            frontFoot *= -1;
-            backFoot *= -1;
-        }
+        float frontPush = frontFoot.y * (Mathf.Abs(frontFoot.y) > Mathf.Abs(frontFoot.x) ? 1f : 0f);
+        float backPush = -backFoot.y;
 
-        bool frontFootNegative = frontFoot.x < 0f;
-        bool backFootNegative = backFoot.x < 0f;
-        float frontMultiplier = 1f;
-        float backMultiplier = 1f;
-        
-        if (frontFootNegative)
-        {
-             frontMultiplier = Mathf.Lerp(0.8f, 1f, Mathf.Clamp01(1f + frontFoot.x));
-        }
-        else
-        {
-             frontMultiplier = Mathf.Lerp(1f, 1.2f, frontFoot.x);
-        }
+        baseMultiplier += (frontPush + backPush) * 0.5f;
 
+        //bool frontFootNegative = frontFoot.x < 0f;
+        //bool backFootNegative = backFoot.x < 0f;
+        //float frontMultiplier = 1f;
+        //float backMultiplier = 1f;
+
+        //if (frontFootNegative)
+        //{
+        //     frontMultiplier = Mathf.Lerp(0.8f, 1f, Mathf.Clamp01(1f + frontFoot.x));
+        //}
+        //else
+        //{
+        //     frontMultiplier = Mathf.Lerp(1f, 1.2f, frontFoot.x);
+        //}
 
 
-        float backPositiveMultiplier = Mathf.Lerp(0.3f, 0.7f, 1f - frontFoot.x);
-        float backNegativeMultiplier = Mathf.Lerp(1f, 0.3f, frontFoot.x);
 
-        float multiplier = frontMultiplier * backMultiplier;
+        //float backPositiveMultiplier = Mathf.Lerp(0.3f, 0.7f, 1f - frontFoot.x);
+        //float backNegativeMultiplier = Mathf.Lerp(1f, 0.3f, frontFoot.x);
+
+        //float multiplier = frontMultiplier * backMultiplier;
+
+        return baseMultiplier;
     }
 
 

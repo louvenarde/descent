@@ -7,8 +7,12 @@ public class BoardProfile : ScriptableObject
 
     public float maxEdgeFriction = 30f;
 
-    public float minimumControlVelocity = 1f;
+    [Range(1f, 10f)]
+    public float minimumControlVelocityKmh = 4f;
 
     [Range(0f, 45f)]
     public float maxVisualTiltDegrees = 15f;
+
+    [Range(0f, 1f)]
+    public float grip = 0.05f;
 }

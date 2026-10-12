@@ -7,8 +7,9 @@ public class BoardController : MonoBehaviour
     public struct BodyEffect
     {
         public float torque;
-        public float steepnessImpulse;
+        public float steepnessVelocityMultiplier;
         public float frictionIncrease;
+        public float tiltSide;
     }
 
     [SerializeField]
@@ -39,7 +40,7 @@ public class BoardController : MonoBehaviour
 
     public Vector3 Velocity { get { return velocity; } }
 
-    public float ControlFromVelocity01 { get { return Mathf.Clamp01(velocity.magnitude / profile.minimumControlVelocity); } }
+    public float ControlFromVelocity01 { get { return Mathf.Clamp01((3.6f * velocity.magnitude / Time.fixedDeltaTime) / profile.minimumControlVelocityKmh); } }
 
     private Vector3 velocity;
 
@@ -47,7 +48,11 @@ public class BoardController : MonoBehaviour
 
     private float velocityAngle;
 
+    private SmoothFloat smoothVelocityAngle = new SmoothFloat();
+
     private float noseDiveTendency;
+
+    private float tiltSideAmount = 0f;
 
     private byte groundHits = 0;
 
@@ -64,6 +69,26 @@ public class BoardController : MonoBehaviour
         currentBodyEffect = bodyEffect;
     }
 
+    public string Dump()
+    {
+        return string.Join("\n",
+            new string[] {
+                string.Format("Velocity angle: {0}°", velocityAngle.ToString("n0")),
+                string.Format("Smooth velocity angle: {0}°", smoothVelocityAngle.Get().ToString("n0")),
+                string.Format("Friction: {0}", dynamicPhysicsMaterial.dynamicFriction.ToString("n2")),
+                string.Format("Ground hits: {0}", groundHits),
+                string.Format("Grounded: {0}", IsGrounded),
+                string.Format("Raw velocity: {0}", velocity),
+                string.Format("Edge friction: {0}%", (GetEdgeFrictionAmount01() * 100).ToString("n0")),
+                string.Format("Ctrl from velocity: {0}%", (ControlFromVelocity01 * 100).ToString("n0")),
+                string.Format("BE Torque: {0}", (currentBodyEffect.torque).ToString("n1")),
+                string.Format("BE Steep Incr: x{0}", (currentBodyEffect.steepnessVelocityMultiplier).ToString("n2")),
+                string.Format("BE Frix Incr: {0}%", (currentBodyEffect.frictionIncrease * 100).ToString("n0")),
+                string.Format("BE Tilt Side: {0}", (currentBodyEffect.tiltSide).ToString("n1"))
+            }
+        );
+    }
+
     void Awake()
     {
         if (boardColliders.Length > 0)
@@ -78,11 +103,17 @@ public class BoardController : MonoBehaviour
         }
     }
 
+    private float GetEdgeFrictionAmount01()
+    {
+        return Mathf.Clamp01(Mathf.Abs(smoothVelocityAngle / 90f));
+    }
+
     private void Update()
     {
         if (boardVisual)
         {
-            boardVisual.localEulerAngles = Vector3.forward * profile.maxVisualTiltDegrees * (- velocityAngle / 180f);
+            float tilt = - Mathf.Lerp((velocityAngle / 180f), tiltSideAmount, 0.5f);
+            boardVisual.localEulerAngles = Vector3.forward * profile.maxVisualTiltDegrees * tilt;
         }
     }
 
@@ -94,15 +125,36 @@ public class BoardController : MonoBehaviour
 
         RefreshMaths();
 
+        RefreshTilt();
+
         RefreshPhysicalMaterial();
 
         AddTorqueFromBodyEffect();
 
-        BendThrustTowardsDirection();
+        //BendThrustTowardsDirection();
+
+        ModifySpeedFromBodyEffect();
 
         AddSympatheticAngularVelocity();
 
         lastPosition = transform.position;
+    }
+
+    private void RefreshTilt()
+    {
+        tiltSideAmount = Mathf.Clamp(currentBodyEffect.tiltSide, -1f, 1f);
+    }
+
+
+    private void ModifySpeedFromBodyEffect()
+    {
+        boardBody.AddForce(
+            boardBody.transform.forward
+                * currentBodyEffect.steepnessVelocityMultiplier
+                * noseDiveTendency
+                * Time.deltaTime,
+            ForceMode.Acceleration
+        );
     }
 
     private void AddTorqueFromBodyEffect()
@@ -118,25 +170,43 @@ public class BoardController : MonoBehaviour
 
     private void BendThrustTowardsDirection()
     {
-        Vector3 velocity = boardBody.velocity;
+        Vector3 velocity = boardBody.transform.TransformVector(boardBody.velocity);
         float y = velocity.y;
+        Vector3 flatVector = new Vector3(velocity.x, 0f, velocity.z);
+        Vector3 forwardSpeed = flatVector.magnitude * Vector3.forward;
+
+        float grip = profile.grip;
+
+        if (noseDiveTendency < 0f)
+        {
+            grip *= 0.5f;
+        }
+
 
         velocity =
-            Vector3.Lerp(velocity, 
-            velocity.magnitude * boardBody.transform.forward,
-            0.05f);
+            Vector3.Lerp(
+               velocity,
+               forwardSpeed,
+            grip * Time.deltaTime);
 
         velocity.y = y;
-        boardBody.velocity = velocity;
+        boardBody.velocity = boardBody.transform.InverseTransformVector(velocity);
     }
 
     private void AddSympatheticAngularVelocity()
     {
+        float multiplier = 1f;
+        if (IsGrounded)
+        {
+            multiplier *= Mathf.Clamp01(noseDiveTendency);
+        }
+
         boardBody.AddTorque(
             boardBody.transform.up
-                * velocityAngle 
+                * smoothVelocityAngle.Get()
                 * profile.sympatheticCorrectionForce
                 * ControlFromVelocity01
+                * multiplier
                 * Time.deltaTime,
             ForceMode.Acceleration
         );
@@ -148,16 +218,17 @@ public class BoardController : MonoBehaviour
         if (IsGrounded)
         {
             float attachPointsLength = Vector3.Distance(hits[0], hits[1]);
-            noseDiveTendency = (hits[0].y - hits[1].y) / attachPointsLength;
+            noseDiveTendency = (hits[1].y - hits[0].y) / attachPointsLength;
             velocityAngle = MathsToolkit.SignedAngle(fwd, velocity, transform.up);
+            smoothVelocityAngle.Add(velocityAngle);
         }
     }
 
     private void RefreshPhysicalMaterial()
     {
-        if (IsGrounded && velocity.sqrMagnitude > 0.01f)
+        if (IsGrounded)
         {
-            dynamicPhysicsMaterial.dynamicFriction = Mathf.Lerp(canonicalPhysicalMaterial.dynamicFriction, profile.maxEdgeFriction, Mathf.Abs(velocityAngle / 90f));
+            dynamicPhysicsMaterial.dynamicFriction = Mathf.Lerp(canonicalPhysicalMaterial.dynamicFriction, profile.maxEdgeFriction, GetEdgeFrictionAmount01() * ControlFromVelocity01);
         }
         else
         {

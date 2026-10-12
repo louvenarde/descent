@@ -6,11 +6,11 @@ public class RiderParameters : ScriptableObject
     [Range(10, 300)]
     public int maxStableSpeedKph;
 
-    public AnimationCurve frontFootWeightCurve = AnimationCurve.Linear(0f, 1f, 0f, 1f);
+    //public AnimationCurve frontFootWeightCurve = AnimationCurve.Linear(0f, 1f, 1f, 1f);
 
-    public AnimationCurve backfootPositiveSpeedCurve = AnimationCurve.Linear(0f, 1f, 1f, 1.5f);
+    //public AnimationCurve backfootPositiveSpeedCurve = AnimationCurve.Linear(0f, 1f, 1f, 1.5f);
 
-    public AnimationCurve backfootNegativeSpeedCurve = AnimationCurve.Linear(0f, 0.5f, 1f, 1f);
+    //public AnimationCurve backfootNegativeSpeedCurve = AnimationCurve.Linear(0f, 0.5f, 1f, 1f);
 
     [Range(0.1f, 3f)]
     public float impactEffectMultiplier = 1f;
@@ -21,6 +21,14 @@ public class RiderParameters : ScriptableObject
     [Range(1f, 120f)]
     public float legResponsiveness = 20f;
 
-    //[Range()]
+    [Range(80, 300f)]
     public float torqueEffect = 100f;
+
+    public AnimationCurve torqueControlFromVelocityAmount = AnimationCurve.Linear(0f, 1f, 1f, 1f);
+
+    [Range(0.1f, 1f)]
+    public float tiltEffectMultiplier = 0.5f;
+
+    [Range(0.1f, 1f)]
+    public float weightSpeedBoostKmh = 30f;
 }
