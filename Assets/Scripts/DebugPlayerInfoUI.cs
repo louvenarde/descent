@@ -71,7 +71,10 @@ public class DebugPlayerInfoUI : MonoBehaviour
 
             speedGauge.fillAmount = stableSpeedAmount;
 
-            fallGauge.fillAmount = 0f; // TODO
+			fallGauge.rectTransform.sizeDelta = new Vector2 (
+				fallGauge.rectTransform.sizeDelta.x,
+				controller.GetFallAmount ()
+			);
 
             float angle = MathsToolkit.SignedAngle(controller.Board.forward, controller.smoothSpeedDirection, -controller.Board.up);
             velocityDirectionIndicator.localEulerAngles = Vector3.forward * angle;
