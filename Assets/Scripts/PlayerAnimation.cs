@@ -195,7 +195,7 @@ public class PlayerAnimation : MonoBehaviour
 		{
 			if (isFalling)
 			{
-				ragdoll.Activate(fallImpulse);
+				ragdoll.Activate(fallImpulse* 10f);
 				animator.enabled = false;
 			}
 			else

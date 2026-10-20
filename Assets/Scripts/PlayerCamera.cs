@@ -6,6 +6,9 @@ public class PlayerCamera : MonoBehaviour {
     [SerializeField]
     private PlayerAnimation playerAnim;
 
+	[SerializeField]
+	private PlayerController controller;
+
     [SerializeField]
     private Material debugMaterial;
 
@@ -15,15 +18,29 @@ public class PlayerCamera : MonoBehaviour {
     [SerializeField]
     private float cameraHeight = 2f;
 
+	[SerializeField]
+	private Camera cameraComponent;
+
+	private SmoothVector smoothPlayerPosition = new SmoothVector();
+
     private void FixedUpdate()
-    {
-        Vector3 target = playerAnim.GetCameraTarget();
-        transform.LookAt(target);
+	{
+		smoothPlayerPosition.Add (playerAnim.GetCameraTarget());
+
+		Vector3 target = smoothPlayerPosition.Get();
+
+		transform.LookAt(target);
 
         Vector3 direction = (transform.position - target);
         direction.y = 0f;
         transform.position = direction.normalized * cameraDistance + target + cameraHeight * Vector3.up;
-    }
+    
+		float speed01 = Mathf.Clamp01(controller.GetStableSpeedAmount());
+
+		if (cameraComponent) {
+			cameraComponent.fieldOfView = Mathf.Lerp (80f, 110f, speed01);
+		}
+	}
 
     /*
     private void OnPostRender()
