@@ -42,16 +42,23 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField]
     private bool debugShowSegmentNumber = false;
 
+    private void Reset()
+    {
+        terrainDefinition.Clear();
+        terrainDefinition.Add(new TerrainPieceInputData());
+    }
+
     private void OnEnable()
     {
         spline = GetComponent<BezierSpline>();
-        pieceExample.gameObject.SetActive(false);
         Build();
     }
 
     [ContextMenu("Clear")]
     private void Clear()
     {
+        if (!pieceExample) return;
+
         // FIXME:
         // Unfortunatly we cannot just use terrain.connections here to remove pieces because it will cause issue with Ctrl+Z
         // I didn't find any means to clear the previous pieces before the undo if the object is affected
@@ -70,12 +77,14 @@ public class TerrainGenerator : MonoBehaviour
     [ContextMenu("Build")]
     private void Build()
     {
+        if (!pieceExample) return;
+        pieceExample.gameObject.SetActive(false);
         Clear();
 
         DescentTerrain.TerrainConnection previousConnector = null;
         for (int i = 0; i < terrainDefinition.Count; i++)
         {
-            TerrainPiece pieceInst = (TerrainPiece)Instantiate(pieceExample, pieceExample.transform.parent);
+            TerrainPiece pieceInst = (TerrainPiece)Instantiate(pieceExample, transform);
             pieceInst.gameObject.SetActive(true);
 
             var connx = new DescentTerrain.TerrainConnection();

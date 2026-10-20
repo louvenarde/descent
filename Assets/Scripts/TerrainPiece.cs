@@ -69,8 +69,8 @@ public class TerrainPiece : MonoBehaviour
 
         List<Vector3> lastRow = new List<Vector3>();
 
-        int nbQuadWidth = (int)(inputData.nbQuadWidth / subdivide);
-        int nbQuadLength = (int)(inputData.nbQuadLength / subdivide);
+        int nbQuadWidth = Math.Max(1, (int)(inputData.nbQuadWidth / subdivide));
+        int nbQuadLength = Math.Max(1, (int)(inputData.nbQuadLength / subdivide));
         float valleyDepth = inputData.valleyDepth;
         AnimationCurve valleyCurveNormalized = inputData.valleyCurveNormalized;
         float exitWidthMeters = inputData.exitWidthMeters;

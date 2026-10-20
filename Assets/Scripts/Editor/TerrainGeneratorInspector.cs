@@ -40,7 +40,9 @@ public class TerrainGeneratorInspector : Editor
                 terrainGenerator.InsertPieceAfter(i);
                 break;
             }
-            if (GUILayout.Button("Delete end point", EditorStyles.miniButtonRight, GUILayout.Width(100f)))
+            
+            if (terrainGenerator.terrainDefinition.Count > 1 && 
+                GUILayout.Button("Delete end point", EditorStyles.miniButtonRight, GUILayout.Width(100f)))
             {
                 Undo.RecordObjects(new Object[]{target, terrainGenerator.spline}, "Delete terrain piece");
                 terrainGenerator.RemoveEndpointFromPiece(i);
