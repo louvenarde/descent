@@ -138,7 +138,7 @@ public class BoardController : MonoBehaviour
 
             AddTorqueFromBodyEffect();
 
-            //BendThrustTowardsDirection();
+            BendThrustTowardsDirection();
 
             ModifySpeedFromBodyEffect();
 
@@ -178,27 +178,35 @@ public class BoardController : MonoBehaviour
 
     private void BendThrustTowardsDirection()
     {
-        Vector3 velocity = boardBody.transform.TransformVector(boardBody.velocity);
-        float y = velocity.y;
-        Vector3 flatVector = new Vector3(velocity.x, 0f, velocity.z);
-        Vector3 forwardSpeed = flatVector.magnitude * Vector3.forward;
+		Vector3 velocityWithoutGravity = new Vector3 (boardBody.velocity.x, 0f, boardBody.velocity.z);
+		Quaternion rotationTowardsDirection = Quaternion.FromToRotation (velocityWithoutGravity.normalized, boardBody.transform.forward);
 
-        float grip = profile.grip;
+		Quaternion lerpedRotation = Quaternion.Lerp (Quaternion.identity, rotationTowardsDirection, profile.grip);
 
-        if (noseDiveTendency < 0f)
-        {
-            grip *= 0.5f;
-        }
+		boardBody.velocity = lerpedRotation * velocityWithoutGravity + Vector3.up * boardBody.velocity.y;
 
-
-        velocity =
-            Vector3.Lerp(
-               velocity,
-               forwardSpeed,
-            grip * Time.deltaTime);
-
-        velocity.y = y;
-        boardBody.velocity = boardBody.transform.InverseTransformVector(velocity);
+//		Vector3 localVelocity = boardBody.transform.TransformVector(boardBody.velocity);
+//	
+//        float y = localVelocity.y;
+//        Vector3 flatVector = new Vector3(localVelocity.x, 0f, localVelocity.z);
+//        Vector3 forwardSpeed = flatVector.magnitude * Vector3.forward;
+//
+//        float grip = profile.grip;
+//
+//        if (noseDiveTendency < 0f)
+//        {
+//            grip *= 0.5f;
+//        }
+//
+//
+//        localVelocity =
+//            Vector3.Lerp(
+//               localVelocity,
+//               forwardSpeed,
+//            grip * Time.deltaTime);
+//
+//        localVelocity.y = y;
+//        boardBody.velocity = boardBody.transform.InverseTransformVector(localVelocity);
     }
 
     private void AddSympatheticAngularVelocity()

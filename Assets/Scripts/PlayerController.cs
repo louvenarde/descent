@@ -379,7 +379,9 @@ public class PlayerController : MonoBehaviour
 
     public readonly SmoothFloat smoothStableSpeedAmount = new SmoothFloat();
 
-    public readonly SmoothVector smoothSpeedDirection = new SmoothVector();
+	public readonly SmoothVector smoothSpeedDirection = new SmoothVector();
+
+	public readonly SmoothVector smoothVelocity = new SmoothVector();
 
 
     private readonly Vector2[] delayedFootInput = new Vector2[PlayerController.FEET];
@@ -420,6 +422,7 @@ public class PlayerController : MonoBehaviour
         smoothSpeedKPH.Add(GetSpeedKPH());
         smoothStableSpeedAmount.Add(GetStableSpeedAmount());
         smoothSpeedDirection.Add(GetSpeedDirection());
+		smoothVelocity.Add (board.Velocity);
 
         posture.Refresh(placement);
 
@@ -536,7 +539,7 @@ public class PlayerController : MonoBehaviour
 
 		float fromBackVelocity = 0f;
 		if (this.board.IsGrounded){
-			float dot = Vector3.Dot (board.transform.forward, board.Velocity.normalized);
+			float dot = Vector3.Dot (board.transform.forward, smoothSpeedDirection.Get());
 			float backSpeedAmount = Mathf.Clamp01 (-dot);
 			fromBackVelocity = RiderSheet.punishment.backFacingVelocityPunishmentEffect * backSpeedAmount;
 		}

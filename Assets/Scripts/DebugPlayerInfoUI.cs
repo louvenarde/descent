@@ -51,7 +51,7 @@ public class DebugPlayerInfoUI : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI playerProfileDebugText;
 
-    void Update()
+    void FixedUpdate()
     {
         PlayerController controller = FindObjectOfType<PlayerController>();
         canvas.enabled = controller;
