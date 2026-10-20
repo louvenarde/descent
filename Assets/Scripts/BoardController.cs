@@ -29,6 +29,9 @@ public class BoardController : MonoBehaviour
     private Transform boardVisual;
 
     [SerializeField]
+    private SpriteRenderer boardTrailSpriteRenderer;
+
+    [SerializeField]
     private Transform[] localAttachPoints = new Transform[0];
 
     [SerializeField]
@@ -115,6 +118,19 @@ public class BoardController : MonoBehaviour
         {
             float tilt = - Mathf.Lerp((velocityAngle / 180f), tiltSideAmount, 0.5f);
             boardVisual.localEulerAngles = Vector3.forward * profile.maxVisualTiltDegrees * tilt;
+        }
+
+        if (boardTrailSpriteRenderer)
+        {
+            if (!IsGrounded)
+                boardTrailSpriteRenderer.color = new Color(0, 0, 0, 0);
+            else
+            {
+                if (boardTrailSpriteRenderer.color.a == 0)
+                    boardTrailSpriteRenderer.color = Color.white;
+                else // Massive hack to tweak: the first time we hit the snow we want a big impact so we set the sprite to white, then we lerp to a more subtle deformation 
+                    boardTrailSpriteRenderer.color = Color.Lerp(boardTrailSpriteRenderer.color, Color.grey, 0.02f);
+            }
         }
     }
 
