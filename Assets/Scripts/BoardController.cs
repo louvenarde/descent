@@ -125,12 +125,9 @@ public class BoardController : MonoBehaviour
         if (currentBodyEffect.isFallen)
         {
             // Do nothing
-            boardBody.isKinematic = true;
         }
         else
         {
-            boardBody.isKinematic = false;
-
             PlaceOnGround();
 
             RefreshMaths();

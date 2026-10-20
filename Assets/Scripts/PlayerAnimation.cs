@@ -136,11 +136,13 @@ public class PlayerAnimation : MonoBehaviour
 
         public RagdollBodyPart[] parts;
 
-        public void Activate()
+		public void Activate(Vector3 impulse=default(Vector3))
         {
             for(int i = 0; i < parts.Length; i++)
             {
                 parts[i].Activate();
+
+				parts [i].body.AddForce (impulse, ForceMode.VelocityChange);
             }
         }
 
@@ -180,28 +182,32 @@ public class PlayerAnimation : MonoBehaviour
 
     private bool isFallen;
 
-    public void SetPosture(PlayerController.LegsPosture posture, PlayerController.HumanoidPlacement placement, Transform board, bool isFalling)
+    public void SetPosture(PlayerController.LegsPosture posture, PlayerController.HumanoidPlacement placement, Transform board)
     {
         this.posture = posture;
         this.placement = placement;
         this.board = board;
-
-        if (isFalling != isFallen)
-        {
-            if (isFalling)
-            {
-                ragdoll.Activate();
-                animator.enabled = false;
-            }
-            else
-            {
-                ragdoll.Deactivate();
-                animator.enabled = true;
-            }
-
-            isFallen = isFalling;
-        }
     }
+
+	public void SetFallen(bool isFalling, Vector3 fallImpulse=default(Vector3))
+	{
+		if (isFalling != isFallen)
+		{
+			if (isFalling)
+			{
+				ragdoll.Activate(fallImpulse);
+				animator.enabled = false;
+			}
+			else
+			{
+				ragdoll.Deactivate();
+				animator.enabled = true;
+			}
+
+			isFallen = isFalling;
+		}
+
+	}
 
     public Vector3 GetCameraTarget()
     {
@@ -209,6 +215,10 @@ public class PlayerAnimation : MonoBehaviour
         {
             return ragdoll.parts[0].body.position;
         }
+		else if (board)
+		{
+			return board.transform.position;
+		}
         else
         {
             return GetBodyPosition();
