@@ -138,11 +138,13 @@ public class BoardController : MonoBehaviour
 
             AddTorqueFromBodyEffect();
 
-            BendThrustTowardsDirection();
+			if (IsGrounded) {
+				BendThrustTowardsDirection ();
 
-            ModifySpeedFromBodyEffect();
+				ModifySpeedFromBodyEffect ();
 
-            AddSympatheticAngularVelocity();
+				AddSympatheticAngularVelocity ();
+			}
         }
 
         lastPosition = transform.position;
@@ -156,13 +158,13 @@ public class BoardController : MonoBehaviour
 
     private void ModifySpeedFromBodyEffect()
     {
-        boardBody.AddForce(
-            boardBody.transform.forward
-                * currentBodyEffect.steepnessVelocityMultiplier
-                * noseDiveTendency
-                * Time.deltaTime,
-            ForceMode.Acceleration
-        );
+			boardBody.AddForce (
+				boardBody.transform.forward
+				* currentBodyEffect.steepnessVelocityMultiplier
+				* noseDiveTendency
+				* Time.deltaTime,
+				ForceMode.Acceleration
+			);
     }
 
     private void AddTorqueFromBodyEffect()
@@ -184,38 +186,12 @@ public class BoardController : MonoBehaviour
 		Quaternion lerpedRotation = Quaternion.Lerp (Quaternion.identity, rotationTowardsDirection, profile.grip);
 
 		boardBody.velocity = lerpedRotation * velocityWithoutGravity + Vector3.up * boardBody.velocity.y;
-
-//		Vector3 localVelocity = boardBody.transform.TransformVector(boardBody.velocity);
-//	
-//        float y = localVelocity.y;
-//        Vector3 flatVector = new Vector3(localVelocity.x, 0f, localVelocity.z);
-//        Vector3 forwardSpeed = flatVector.magnitude * Vector3.forward;
-//
-//        float grip = profile.grip;
-//
-//        if (noseDiveTendency < 0f)
-//        {
-//            grip *= 0.5f;
-//        }
-//
-//
-//        localVelocity =
-//            Vector3.Lerp(
-//               localVelocity,
-//               forwardSpeed,
-//            grip * Time.deltaTime);
-//
-//        localVelocity.y = y;
-//        boardBody.velocity = boardBody.transform.InverseTransformVector(localVelocity);
-    }
+	}
 
     private void AddSympatheticAngularVelocity()
     {
-        float multiplier = 1f;
-        if (IsGrounded)
-        {
-            multiplier *= Mathf.Clamp01(noseDiveTendency);
-        }
+		float multiplier = 1f;
+		multiplier *= Mathf.Clamp01(noseDiveTendency);
 
         boardBody.AddTorque(
             boardBody.transform.up

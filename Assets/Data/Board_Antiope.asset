@@ -15,4 +15,4 @@ MonoBehaviour:
   maxEdgeFriction: 0.5
   minimumControlVelocityKmh: 10
   maxVisualTiltDegrees: 45
-  grip: 0.75
+  grip: 0.4
