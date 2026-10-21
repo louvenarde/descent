@@ -46,7 +46,6 @@ public class TerrainGenerator : MonoBehaviour
     private void OnEnable()
     {
         spline = GetComponent<BezierSpline>();
-        Rebuild();
         Undo.undoRedoPerformed += Rebuild;
     }
 
