@@ -79,7 +79,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4000011791487422
 Transform:
   m_ObjectHideFlags: 1
@@ -271,6 +271,7 @@ MonoBehaviour:
   - {fileID: 33000011142133170}
   - {fileID: 33000011988115446}
   lodMeshes: []
+  outgoingConnectors: []
 --- !u!205 &205000013318674936
 LODGroup:
   m_ObjectHideFlags: 1

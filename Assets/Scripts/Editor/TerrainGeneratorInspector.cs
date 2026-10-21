@@ -9,9 +9,9 @@ public class TerrainGeneratorInspector : Editor
         serializedObject.Update();
 
         TerrainGenerator terrainGenerator = target as TerrainGenerator;
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("pieceExample"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("piecePrefab"));
 
-        EditorGUILayout.LabelField("Pieces:");
+        EditorGUILayout.LabelField("Terrain:");
         EditorGUI.indentLevel++;
         int newCount = EditorGUILayout.DelayedIntField("Size", terrainGenerator.terrainDefinition.Count);
         int diff = newCount - terrainGenerator.terrainDefinition.Count;
@@ -52,6 +52,8 @@ public class TerrainGeneratorInspector : Editor
 
             if (elementProp.isExpanded)
             {
+                EditorGUI.BeginChangeCheck();
+
                 // there is no clean way to traverse only child property, so we need to find our sibbling manually...
                 SerializedProperty nextProp = elementProp.Copy(); nextProp.NextVisible(false);
                 EditorGUI.indentLevel++;
@@ -62,14 +64,24 @@ public class TerrainGeneratorInspector : Editor
                     EditorGUILayout.PropertyField(elementProp, true);
                 }
                 EditorGUI.indentLevel--;
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    terrainGenerator.dirty.Add(i-1);
+                    terrainGenerator.dirty.Add(i);
+                    terrainGenerator.dirty.Add(i+1);
+                }
             }
         }
         EditorGUI.indentLevel--;
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("terrain"), true);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("pieces"), true);
 
         EditorGUILayout.PropertyField(serializedObject.FindProperty("debugShowPlane"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("debugShowSegmentNumber"));
 
         serializedObject.ApplyModifiedProperties();
+
+        if (GUILayout.Button("Rebuild"))
+            terrainGenerator.Rebuild();
     }
 }
