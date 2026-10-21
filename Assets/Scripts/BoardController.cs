@@ -60,6 +60,8 @@ public class BoardController : MonoBehaviour
 
     private byte groundHits = 0;
 
+	private float gripMultiplier = 0f;
+
     private BodyEffect currentBodyEffect;
 
     private readonly Vector3[] hits = new Vector3[2];
@@ -144,7 +146,15 @@ public class BoardController : MonoBehaviour
         }
         else
         {
-            PlaceOnGround();
+			if (PlaceOnGround ()) {
+				// Grounded status has changed
+				if (IsGrounded) {
+					// We just landed
+
+					float dot = Mathf.Clamp01(Vector3.Dot (transform.forward, Velocity.normalized));
+					gripMultiplier = dot; // If we landed facing velocity we keep the grip, otherwise we lose it
+				}
+			}
 
             RefreshMaths();
 
@@ -160,11 +170,21 @@ public class BoardController : MonoBehaviour
 				ModifySpeedFromBodyEffect ();
 
 				AddSympatheticAngularVelocity ();
+
+				RecoverGrip ();
 			}
         }
 
         lastPosition = transform.position;
     }
+
+	private void RecoverGrip()
+	{
+		if (gripMultiplier < 1f) {
+			gripMultiplier += Time.deltaTime / profile.gripRecoveryTimeSeconds;
+			gripMultiplier = Mathf.Clamp01 (gripMultiplier);
+		}
+	}
 
     private void RefreshTilt()
     {
@@ -199,7 +219,7 @@ public class BoardController : MonoBehaviour
 		Vector3 velocityWithoutGravity = new Vector3 (boardBody.velocity.x, 0f, boardBody.velocity.z);
 		Quaternion rotationTowardsDirection = Quaternion.FromToRotation (velocityWithoutGravity.normalized, boardBody.transform.forward);
 
-		Quaternion lerpedRotation = Quaternion.Lerp (Quaternion.identity, rotationTowardsDirection, profile.grip);
+		Quaternion lerpedRotation = Quaternion.Lerp (Quaternion.identity, rotationTowardsDirection, profile.grip * gripMultiplier);
 
 		boardBody.velocity = lerpedRotation * velocityWithoutGravity + Vector3.up * boardBody.velocity.y;
 	}
@@ -244,8 +264,9 @@ public class BoardController : MonoBehaviour
         }
     }
 
-    private void PlaceOnGround()
+    private bool PlaceOnGround()
     {
+		bool wasGrounded = IsGrounded;
         groundHits = 0;
         for (int i = 0; i < localAttachPoints.Length; i++)
         {
@@ -277,6 +298,8 @@ public class BoardController : MonoBehaviour
             Quaternion rotation = Quaternion.LookRotation(hits[0] - hits[1]);
             boardElementsParent.rotation = rotation;
         }
+
+		return wasGrounded != IsGrounded;
     }
 
 #if DEBUG

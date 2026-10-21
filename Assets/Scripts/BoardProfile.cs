@@ -14,5 +14,8 @@ public class BoardProfile : ScriptableObject
     public float maxVisualTiltDegrees = 15f;
 
     [Range(0f, 1f)]
-    public float grip = 0.05f;
+	public float grip = 0.05f;
+
+	[Range(0f, 3f)]
+	public float gripRecoveryTimeSeconds = 1.5f;
 }
