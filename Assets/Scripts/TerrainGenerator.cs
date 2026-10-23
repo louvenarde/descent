@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -13,29 +14,19 @@ using UnityEditor;
 public class TerrainGenerator : MonoBehaviour
 {
 #if UNITY_EDITOR
-    public TerrainPiece pieceExample;
+    public TerrainPiece piecePrefab;
 
     [NonSerialized]
     public BezierSpline spline;
 
-    [System.Serializable]
-    public class DescentTerrain
-    {
-        [System.Serializable]
-        public class TerrainConnection
-        {
-            public TerrainPiece piece;
-            public List<TerrainPiece.Connector> outgoingConnectors;
-        }
-
-        public List<TerrainConnection> connections = new List<TerrainConnection>();
-    }
-
+    [SerializeField]
     public List<TerrainPieceInputData> terrainDefinition = new List<TerrainPieceInputData>();
 
     [SerializeField]
-    //[HideInInspector]
-    private DescentTerrain terrain = new DescentTerrain();
+    private List<TerrainPiece> pieces = new List<TerrainPiece>();
+
+    [NonSerialized]
+    public HashSet<int> dirty = new HashSet<int>();
 
     [SerializeField]
     private bool debugShowPlane = false;
@@ -44,59 +35,63 @@ public class TerrainGenerator : MonoBehaviour
 
     private void Reset()
     {
-        terrainDefinition.Clear();
-        terrainDefinition.Add(new TerrainPieceInputData());
+        terrainDefinition = new List<TerrainPieceInputData> {
+            new TerrainPieceInputData()
+        };
+        Undo.RecordObject(spline, "Reset Spline");
+        spline.Reset();
+        Rebuild();
     }
 
     private void OnEnable()
     {
         spline = GetComponent<BezierSpline>();
-        Build();
+        Undo.undoRedoPerformed += Rebuild;
     }
 
-    [ContextMenu("Clear")]
-    private void Clear()
+    private void OnDisable()
     {
-        if (!pieceExample) return;
+        Undo.undoRedoPerformed -= Rebuild;
+    }
 
-        // FIXME:
-        // Unfortunatly we cannot just use terrain.connections here to remove pieces because it will cause issue with Ctrl+Z
-        // I didn't find any means to clear the previous pieces before the undo if the object is affected
-        // Maybe with OnBeforeSerialize? but it will likely cause issue on terrainpiece serialization down the line? - Togi
+    private void OnDestroy()
+    {
+        DestroyAllPieces();
+    }
 
+    [ContextMenu("Destroy all pieces")]
+    private void DestroyAllPieces()
+    {
         for (int i = transform.childCount - 1; i >= 0; i--)
-        {
-            GameObject childObject = transform.GetChild(i).gameObject;
-            if (childObject == pieceExample.gameObject) continue;
-            DestroyImmediate(childObject);
-        }
-
-        terrain.connections.Clear();
+            DestroyImmediate(transform.GetChild(i).gameObject);
+        pieces.Clear();
     }
 
-    [ContextMenu("Build")]
-    private void Build()
+    private void Build(int i)
     {
-        if (!pieceExample) return;
-        pieceExample.gameObject.SetActive(false);
-        Clear();
+        if (i < 0 || i > terrainDefinition.Count) return;
 
-        DescentTerrain.TerrainConnection previousConnector = null;
+        if (i >= pieces.Count)
+            pieces.AddRange(Enumerable.Repeat<TerrainPiece>(null, i - pieces.Count + 1));
+        if (pieces[i] == null)
+            pieces[i] = (TerrainPiece)Instantiate(piecePrefab, transform);
+        pieces[i].gameObject.SetActive(true);
+
+        pieces[i].Build(i == 0 ? null : pieces[i - 1], terrainDefinition[i], spline, i);
+    }
+    
+    [ContextMenu("Rebuild")]
+    public void Rebuild()
+    {
+        DestroyAllPieces();
+
+        if (!piecePrefab) return;
+
         for (int i = 0; i < terrainDefinition.Count; i++)
-        {
-            TerrainPiece pieceInst = (TerrainPiece)Instantiate(pieceExample, transform);
-            pieceInst.gameObject.SetActive(true);
+            Build(i);
 
-            var connx = new DescentTerrain.TerrainConnection();
-            connx.piece = pieceInst;
-
-            List<TerrainPiece.Connector> connectors;
-            connx.piece.Build(previousConnector, terrainDefinition[i], spline, i, out connectors);
-            connx.outgoingConnectors = connectors;
-            previousConnector = connx;
-
-            terrain.connections.Add(connx);
-        }
+        dirty.Clear();
+        spline.dirty.Clear();
     }
 
 
@@ -107,7 +102,7 @@ public class TerrainGenerator : MonoBehaviour
         data.valleyCurveNormalized = new AnimationCurve(terrainDefinition[pos].valleyCurveNormalized.keys);
         terrainDefinition.Insert(pos + 1, data);
         spline.InsertCurve(pos + 1);
-        Build();
+        Rebuild();
     }
 
     /// <summary>
@@ -121,54 +116,30 @@ public class TerrainGenerator : MonoBehaviour
     {
         terrainDefinition.RemoveAt(pos);
         spline.RemoveCurve(pos + 1);
-        Build();
+        Rebuild();
     }
 
     // Executed in edit mode
     private void Update()
     {
-        if (Selection.Contains(gameObject.GetInstanceID()))
-        {
-            Build();
-        }
-    }
-
-    private void OnDestroy()
-    {
-        Clear();
+        dirty.UnionWith(spline.dirty);
+        foreach(int index in dirty)
+            Build(index);
+        dirty.Clear();
+        spline.dirty.Clear();
     }
 
     void OnDrawGizmos()
     {
-        for(int i = 0; i < terrain.connections.Count; i++)
+        for(int i = 0; i < pieces.Count; i++)
         {
-            var connx = terrain.connections[i];
+            var piece = pieces[i];
 
-            Handles.color = Color.Lerp(Color.yellow, Color.red, 0.5f);
-            Handles.ArrowCap(0, connx.outgoingConnectors[0].exitPoint, Quaternion.LookRotation(connx.outgoingConnectors[0].exitDirection, Vector3.up), 1f);
-
-            Vector3 exitCenter = connx.outgoingConnectors[0].exitPoint;
-            if(debugShowPlane)
-            {
-                Vector3 normal = connx.outgoingConnectors[0].exitDirection;
-                Vector3 right = Vector3.Cross(Vector3.up, normal).normalized;
-                Vector3 up = Vector3.Cross(right, normal).normalized;
-            
-                Vector3[] verts = new Vector3[]
-                {
-                    exitCenter - right * connx.outgoingConnectors[0].exitWidth - up * connx.outgoingConnectors[0].exitValleyDepth,
-                    exitCenter + right * connx.outgoingConnectors[0].exitWidth - up * connx.outgoingConnectors[0].exitValleyDepth,
-                    exitCenter + right * connx.outgoingConnectors[0].exitWidth + up * connx.outgoingConnectors[0].exitValleyDepth,
-                    exitCenter - right * connx.outgoingConnectors[0].exitWidth + up * connx.outgoingConnectors[0].exitValleyDepth
-                };
-
-                Color c = new Color(1, 0, 1, 0.1f);
-                Handles.DrawSolidRectangleWithOutline(verts, c, Color.white); // no zTest for handles in this version of Unity... need to find an alternative
-            }
+            piece.DrawPieceGizmo(debugShowPlane);
 
             if (debugShowSegmentNumber)
             {
-                Handles.Label((connx.piece.transform.position + exitCenter) / 2,
+                Handles.Label((piece.transform.position + piece.GetExitCenter()) / 2,
                 i.ToString(),
                 new GUIStyle() { fontSize = 20, normal = new GUIStyleState() { textColor = Color.red }, alignment = TextAnchor.MiddleCenter });
             }

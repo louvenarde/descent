@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
-using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,12 +9,6 @@ using UnityEditor;
 
 public class TerrainPiece : MonoBehaviour
 {
-    [SerializeField]
-    List<MeshFilter> lodFilters;
-    [SerializeField]
-    List<Mesh> lodMeshes;
-
-#if UNITY_EDITOR
     [System.Serializable]
     public struct Connector
     {
@@ -27,9 +20,18 @@ public class TerrainPiece : MonoBehaviour
         public List<Vector2> exitRow;
     }
 
-    public void Build(TerrainGenerator.DescentTerrain.TerrainConnection entryConnector, TerrainPieceInputData inputData, BezierSpline spline, int index, out List<Connector> exitConnectors)
+    [SerializeField]
+    List<MeshFilter> lodFilters;
+    [SerializeField]
+    List<Mesh> lodMeshes;
+
+    [SerializeField]
+    List<Connector> outgoingConnectors;
+
+#if UNITY_EDITOR
+    public void Build(TerrainPiece previousPiece, TerrainPieceInputData inputData, BezierSpline spline, int index)
     {
-        exitConnectors = new List<Connector>();
+        outgoingConnectors = new List<Connector>();
 
         for (int lod = 0; lod < lodFilters.Count; lod++) {
             if(lodMeshes.Count <= lod)
@@ -37,11 +39,11 @@ public class TerrainPiece : MonoBehaviour
 
             lodMeshes[lod].Clear();
             Connector exitConnector;
-            if (entryConnector != null)
-                CreateMesh(lodMeshes[lod], entryConnector.outgoingConnectors[lod], inputData, spline, index, out exitConnector, Mathf.Pow(2, lod));
+            if (previousPiece != null)
+                CreateMesh(lodMeshes[lod], previousPiece.outgoingConnectors[lod], inputData, spline, index, out exitConnector, Mathf.Pow(2, lod));
             else
                 CreateMesh(lodMeshes[lod], null, inputData, spline, index, out exitConnector, Mathf.Pow(2, lod));
-            exitConnectors.Add(exitConnector);
+            outgoingConnectors.Add(exitConnector);
             lodFilters[lod].sharedMesh = lodMeshes[lod];
         }
 
@@ -211,6 +213,36 @@ public class TerrainPiece : MonoBehaviour
         for (int i = 0; i < lodMeshes.Count; i++)
             Destroy(lodMeshes[i]);
         lodMeshes.Clear();
+    }
+
+    public Vector3 GetExitCenter()
+    {
+        return outgoingConnectors[0].exitPoint;
+    }
+
+    public void DrawPieceGizmo(bool showPlane)
+    {
+        Handles.color = Color.Lerp(Color.yellow, Color.red, 0.5f);
+        Handles.ArrowCap(0, outgoingConnectors[0].exitPoint, Quaternion.LookRotation(outgoingConnectors[0].exitDirection, Vector3.up), 1f);
+
+        Vector3 exitCenter = outgoingConnectors[0].exitPoint;
+        if (showPlane)
+        {
+            Vector3 normal = outgoingConnectors[0].exitDirection;
+            Vector3 right = Vector3.Cross(Vector3.up, normal).normalized;
+            Vector3 up = Vector3.Cross(right, normal).normalized;
+
+            Vector3[] verts = new Vector3[]
+            {
+                    exitCenter - right * outgoingConnectors[0].exitWidth - up * outgoingConnectors[0].exitValleyDepth,
+                    exitCenter + right * outgoingConnectors[0].exitWidth - up * outgoingConnectors[0].exitValleyDepth,
+                    exitCenter + right * outgoingConnectors[0].exitWidth + up * outgoingConnectors[0].exitValleyDepth,
+                    exitCenter - right * outgoingConnectors[0].exitWidth + up * outgoingConnectors[0].exitValleyDepth
+            };
+
+            Color c = new Color(1, 0, 1, 0.1f);
+            Handles.DrawSolidRectangleWithOutline(verts, c, Color.white); // no zTest for handles in this version of Unity... need to find an alternative
+        }
     }
 
     /*private void OnDrawGizmosSelected()

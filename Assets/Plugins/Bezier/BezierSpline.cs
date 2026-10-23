@@ -18,6 +18,9 @@ public class BezierSpline : MonoBehaviour
     [SerializeField]
     private List<PointMode> modes;
 
+    [NonSerialized]
+    public HashSet<int> dirty = new HashSet<int>();
+
     public bool debugShowDirection = false;
 
     public int ControlPointCount
@@ -66,11 +69,14 @@ public class BezierSpline : MonoBehaviour
     private void EnforceMode(int index)
     {
         int modeIndex = (index + 1) / 3;
+        dirty.Add(modeIndex);
+        if (index % 3 == 0) dirty.Add(modeIndex - 1);
         PointMode mode = modes[modeIndex];
         if (mode == PointMode.Free || (modeIndex == 0 || modeIndex == modes.Count - 1))
         {
             return;
         }
+        dirty.Add(modeIndex - 1);
 
         int middleIndex = modeIndex * 3;
         int fixedIndex, enforcedIndex;
