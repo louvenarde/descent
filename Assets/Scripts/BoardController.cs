@@ -11,6 +11,7 @@ public class BoardController : MonoBehaviour
         public float frictionIncrease;
         public float tiltSide;
         public bool isFallen;
+		public float crossingDirections01;
     }
 
     [SerializeField]
@@ -29,9 +30,6 @@ public class BoardController : MonoBehaviour
     private Transform boardVisual;
 
     [SerializeField]
-    private SpriteRenderer boardTrailSpriteRenderer;
-
-    [SerializeField]
     private Transform[] localAttachPoints = new Transform[0];
 
     [SerializeField]
@@ -43,6 +41,8 @@ public class BoardController : MonoBehaviour
     public bool IsGrounded { get { return groundHits > 0; } }
 
     public Vector3 Velocity { get { return velocity; } }
+
+	public Vector3 LocalVelocity { get { return transform.InverseTransformVector (Velocity); } }
 
     public float ControlFromVelocity01 { get { return Mathf.Clamp01((3.6f * velocity.magnitude / Time.fixedDeltaTime) / profile.minimumControlVelocityKmh); } }
 
@@ -86,11 +86,12 @@ public class BoardController : MonoBehaviour
                 string.Format("Grounded: {0}", IsGrounded),
                 string.Format("Raw velocity: {0}", velocity),
                 string.Format("Edge friction: {0}%", (GetEdgeFrictionAmount01() * 100).ToString("n0")),
-                string.Format("Ctrl from velocity: {0}%", (ControlFromVelocity01 * 100).ToString("n0")),
+				string.Format("Grip multiplier: {0}%", (gripMultiplier * 100).ToString("n0")),
+				string.Format("BE X Dir: {0}%", (currentBodyEffect.crossingDirections01 * 100).ToString("n0")),
                 string.Format("BE Torque: {0}", (currentBodyEffect.torque).ToString("n1")),
                 string.Format("BE Steep Incr: x{0}", (currentBodyEffect.steepnessVelocityMultiplier).ToString("n2")),
                 string.Format("BE Frix Incr: {0}%", (currentBodyEffect.frictionIncrease * 100).ToString("n0")),
-                string.Format("BE Tilt Side: {0}", (currentBodyEffect.tiltSide).ToString("n1"))
+				string.Format("BE Tilt Side: {0}", (currentBodyEffect.tiltSide).ToString("n1")),
             }
         );
     }
@@ -122,18 +123,6 @@ public class BoardController : MonoBehaviour
             boardVisual.localEulerAngles = Vector3.forward * profile.maxVisualTiltDegrees * tilt;
         }
 
-        if (boardTrailSpriteRenderer)
-        {
-            if (!IsGrounded)
-                boardTrailSpriteRenderer.color = new Color(0, 0, 0, 0);
-            else
-            {
-                if (boardTrailSpriteRenderer.color.a == 0)
-                    boardTrailSpriteRenderer.color = Color.white;
-                else // Massive hack to tweak: the first time we hit the snow we want a big impact so we set the sprite to white, then we lerp to a more subtle deformation 
-                    boardTrailSpriteRenderer.color = Color.Lerp(boardTrailSpriteRenderer.color, Color.grey, 0.02f);
-            }
-        }
     }
 
     private void FixedUpdate()
@@ -143,6 +132,8 @@ public class BoardController : MonoBehaviour
         if (currentBodyEffect.isFallen)
         {
             // Do nothing
+
+			dynamicPhysicsMaterial.dynamicFriction = 1;
         }
         else
         {
@@ -151,8 +142,8 @@ public class BoardController : MonoBehaviour
 				if (IsGrounded) {
 					// We just landed
 
-					float dot = Mathf.Clamp01(Vector3.Dot (transform.forward, Velocity.normalized));
-					gripMultiplier = dot; // If we landed facing velocity we keep the grip, otherwise we lose it
+					float dot = Vector3.Dot (transform.forward, Velocity.normalized);
+					gripMultiplier = Mathf.Clamp01(dot); // If we landed facing velocity we keep the grip, otherwise we lose it
 				}
 			}
 
@@ -165,6 +156,9 @@ public class BoardController : MonoBehaviour
             AddTorqueFromBodyEffect();
 
 			if (IsGrounded) {
+
+				ModifyGripFromBodyEffect ();
+
 				BendThrustTowardsDirection ();
 
 				ModifySpeedFromBodyEffect ();
@@ -205,14 +199,25 @@ public class BoardController : MonoBehaviour
 
     private void AddTorqueFromBodyEffect()
     {
+		float noseDiveEffect = Mathf.Clamp01 (noseDiveTendency);
+		// If noseDive is Zero, we're going up
+		// If we're going up and we're crossing legs, it's time to stop applying torque
+		float multiplierFromSteepCross = 1f - ((1f - noseDiveEffect) * currentBodyEffect.crossingDirections01);
+
         boardBody.AddTorque(
             boardBody.transform.up
                 * currentBodyEffect.torque
                 * ControlFromVelocity01
+				* multiplierFromSteepCross // This will have no effect except when we're climbing up AND crossing
                 * Time.deltaTime,
             ForceMode.Acceleration
         );
     }
+
+	private void ModifyGripFromBodyEffect()
+	{
+		gripMultiplier *= 1f - currentBodyEffect.crossingDirections01;
+	}
 
     private void BendThrustTowardsDirection()
     {
@@ -222,22 +227,22 @@ public class BoardController : MonoBehaviour
 		Quaternion lerpedRotation = Quaternion.Lerp (Quaternion.identity, rotationTowardsDirection, profile.grip * gripMultiplier);
 
 		boardBody.velocity = lerpedRotation * velocityWithoutGravity + Vector3.up * boardBody.velocity.y;
-	}
+	} 
 
     private void AddSympatheticAngularVelocity()
-    {
-		float multiplier = 1f;
-		multiplier *= Mathf.Clamp01(noseDiveTendency);
+	{
+		float multiplier = 1f - currentBodyEffect.crossingDirections01;
+		multiplier *= Mathf.Clamp01 (noseDiveTendency);
 
-        boardBody.AddTorque(
-            boardBody.transform.up
-                * smoothVelocityAngle.Get()
-                * profile.sympatheticCorrectionForce
-                * ControlFromVelocity01
-                * multiplier
-                * Time.deltaTime,
-            ForceMode.Acceleration
-        );
+		boardBody.AddTorque (
+			boardBody.transform.up
+			* smoothVelocityAngle.Get ()
+			* profile.sympatheticCorrectionForce
+//                * ControlFromVelocity01
+			* multiplier
+			* Time.deltaTime,
+			ForceMode.Acceleration
+		);
     }
 
     private void RefreshMaths()
