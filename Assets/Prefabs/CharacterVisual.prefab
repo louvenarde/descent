@@ -37,7 +37,7 @@ GameObject:
   - 136: {fileID: 136000013361017816}
   - 54: {fileID: 54000010544309024}
   - 144: {fileID: 144000011550732290}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: forearm.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   - 4: {fileID: 4000013050885602}
   - 65: {fileID: 65000012100938996}
   - 54: {fileID: 54000013452393528}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,7 +162,7 @@ GameObject:
   - 136: {fileID: 136000012341310642}
   - 54: {fileID: 54000010092983840}
   - 144: {fileID: 144000010508473870}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: thigh.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ GameObject:
   - 136: {fileID: 136000013067511536}
   - 54: {fileID: 54000012281949928}
   - 144: {fileID: 144000013024601542}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: upper_arm.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -335,7 +335,7 @@ GameObject:
   - 136: {fileID: 136000012270769080}
   - 54: {fileID: 54000010024856422}
   - 144: {fileID: 144000012257210526}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: shin.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -536,7 +536,7 @@ GameObject:
   - 136: {fileID: 136000010204557228}
   - 54: {fileID: 54000012771099788}
   - 144: {fileID: 144000013659423652}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: forearm.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -629,7 +629,7 @@ GameObject:
   - 135: {fileID: 135000010182694324}
   - 54: {fileID: 54000011177539522}
   - 144: {fileID: 144000010662734844}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: spine.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -662,7 +662,7 @@ GameObject:
   - 65: {fileID: 65000012218873792}
   - 54: {fileID: 54000013547200196}
   - 144: {fileID: 144000011109261900}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: spine.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -742,7 +742,7 @@ GameObject:
   - 136: {fileID: 136000010164330482}
   - 54: {fileID: 54000012214085238}
   - 144: {fileID: 144000012072516990}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: shin.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -791,7 +791,7 @@ GameObject:
   - 136: {fileID: 136000011689298172}
   - 54: {fileID: 54000011515290978}
   - 144: {fileID: 144000010175355432}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: upper_arm.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -813,7 +813,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1000013505392780
 GameObject:
   m_ObjectHideFlags: 1
@@ -931,7 +931,7 @@ GameObject:
   - 136: {fileID: 136000010227543352}
   - 54: {fileID: 54000013856967988}
   - 144: {fileID: 144000011720362750}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: thigh.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2072,7 +2072,7 @@ MonoBehaviour:
   rightFoot: {fileID: 0}
   lookAt: 0
   ikPlacement: 1
-  ikHints: 0
+  ikHints: 1
 --- !u!135 &135000010182694324
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -2220,7 +2220,7 @@ SkinnedMeshRenderer:
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0
-  m_UpdateWhenOffscreen: 0
+  m_UpdateWhenOffscreen: 1
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 4300002, guid: 24dc1cf43cd5c0d43a5a094685c45925, type: 3}
   m_Bones:
@@ -2362,7 +2362,7 @@ SkinnedMeshRenderer:
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0
-  m_UpdateWhenOffscreen: 0
+  m_UpdateWhenOffscreen: 1
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 4300004, guid: 24dc1cf43cd5c0d43a5a094685c45925, type: 3}
   m_Bones:
@@ -2480,7 +2480,7 @@ SkinnedMeshRenderer:
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0
-  m_UpdateWhenOffscreen: 0
+  m_UpdateWhenOffscreen: 1
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 4300006, guid: 24dc1cf43cd5c0d43a5a094685c45925, type: 3}
   m_Bones:
@@ -2551,7 +2551,7 @@ SkinnedMeshRenderer:
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0
-  m_UpdateWhenOffscreen: 0
+  m_UpdateWhenOffscreen: 1
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 4300008, guid: 24dc1cf43cd5c0d43a5a094685c45925, type: 3}
   m_Bones:
@@ -2622,7 +2622,7 @@ SkinnedMeshRenderer:
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0
-  m_UpdateWhenOffscreen: 0
+  m_UpdateWhenOffscreen: 1
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 4300010, guid: 24dc1cf43cd5c0d43a5a094685c45925, type: 3}
   m_Bones:

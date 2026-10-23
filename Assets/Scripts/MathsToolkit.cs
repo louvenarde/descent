@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public class MathsToolkit
+public static class MathsToolkit
 {
     public static bool GetCirclesIntersection(Vector3 c1, float r1, Vector3 c2, float r2,
         out Vector3 a1, out Vector3 a2)
@@ -53,6 +53,11 @@ public class MathsToolkit
             return true;
         }
     }
+
+	public static Vector2 ReverseX(this Vector2 vec2)
+	{
+		return new Vector2 (-vec2.x, vec2.y);
+	}
 
     public static float SignedAngle(Vector3 from, Vector3 to, Vector3 axis)
     {

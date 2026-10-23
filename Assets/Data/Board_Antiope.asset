@@ -11,8 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a42363adbe0ae042a1a28f1ad7608cb, type: 3}
   m_Name: Board_Antiope
   m_EditorClassIdentifier: 
-  sympatheticCorrectionForce: 3
+  sympatheticCorrectionForce: 5
   maxEdgeFriction: 0.5
   minimumControlVelocityKmh: 10
   maxVisualTiltDegrees: 45
   grip: 0.4
+  gripRecoveryTimeSeconds: 1.5

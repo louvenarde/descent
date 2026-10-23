@@ -21,6 +21,9 @@ public class PlayerCamera : MonoBehaviour {
 	[SerializeField]
 	private Camera cameraComponent;
 
+	[SerializeField]
+	private ParticleSystem speedLines;
+
 	private SmoothVector smoothPlayerPosition = new SmoothVector();
 
     private void FixedUpdate()
@@ -35,10 +38,17 @@ public class PlayerCamera : MonoBehaviour {
         direction.y = 0f;
         transform.position = direction.normalized * cameraDistance + target + cameraHeight * Vector3.up;
     
-		float speed01 = Mathf.Clamp01(controller.GetStableSpeedAmount());
+		if (controller) {
+			
+			float speed01 = Mathf.Clamp01 (controller.GetStableSpeedAmount ());
 
-		if (cameraComponent) {
-			cameraComponent.fieldOfView = Mathf.Lerp (80f, 110f, speed01);
+			if (cameraComponent) {
+				cameraComponent.fieldOfView = Mathf.Lerp (80f, 110f, speed01);
+			}
+
+			if (speedLines) {
+				speedLines.startColor = new Color (1f, 1f, 1f, speed01);
+			}
 		}
 	}
 

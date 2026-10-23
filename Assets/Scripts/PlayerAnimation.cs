@@ -174,6 +174,9 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField]
     private LegSkeleton legs;
 
+
+	public bool IsGoofy {get {return placement == null ? false : placement.IsGoofy;}}
+
     private PlayerController.LegsPosture posture;
 
     private PlayerController.HumanoidPlacement placement;
@@ -235,9 +238,21 @@ public class PlayerAnimation : MonoBehaviour
         }
 
         return transform.position;
-    }
+	}
 
-    public Vector3 GetFeetPosition(byte leg)
+	public bool GetFootSlot(byte leg, out Transform t)
+	{
+		if (placement != null)
+		{
+			t = placement.FeetSlots[leg];
+			return true;
+		}
+
+		t = null;
+		return false;
+	}
+
+    public Vector3 GetFootPosition(byte leg)
     {
         if (posture != null)
         {
@@ -249,7 +264,7 @@ public class PlayerAnimation : MonoBehaviour
         return Vector3.zero;
     }
 
-    public Vector3 GetFeetDirection(byte leg)
+    public Vector3 GetFootDirection(byte leg)
     {
         if (posture != null)
         {

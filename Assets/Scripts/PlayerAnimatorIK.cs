@@ -10,11 +10,6 @@ public class PlayerAnimatorIK : MonoBehaviour {
     [SerializeField]
     private PlayerAnimation playerAnimation;
 
-    [SerializeField]
-    private Transform leftFoot;
-    [SerializeField]
-    private Transform rightFoot;
-
 
     [SerializeField]
     private bool lookAt = true;
@@ -42,23 +37,36 @@ public class PlayerAnimatorIK : MonoBehaviour {
                 }
             }            
 
-            if (ikPlacement && leftFoot && rightFoot)
+			Transform leftSlot;
+			Transform rightSlot;
+
+			if (ikPlacement && playerAnimation.GetFootSlot(PlayerController.LEFT, out leftSlot) && playerAnimation.GetFootSlot(PlayerController.RIGHT, out rightSlot) )
             {
-                animator.SetIKPosition(AvatarIKGoal.LeftFoot, leftFoot.position);
-                animator.SetIKPosition(AvatarIKGoal.RightFoot, rightFoot.position);
+				Transform frontSlot = rightSlot;
+				Transform backSlot = leftSlot;
+				float footDirectionSign = -1;
+
+				if (playerAnimation.IsGoofy) {
+					frontSlot = leftSlot;
+					backSlot = rightSlot;
+					footDirectionSign = 1;
+				}
+
+				animator.SetIKPosition(AvatarIKGoal.LeftFoot, backSlot.position);
+				animator.SetIKPosition(AvatarIKGoal.RightFoot, frontSlot.position);
                 animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
                 animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1f);
 
-                animator.SetIKRotation(AvatarIKGoal.LeftFoot, leftFoot.rotation);
-                animator.SetIKRotation(AvatarIKGoal.RightFoot, rightFoot.rotation);
+				animator.SetIKRotation(AvatarIKGoal.LeftFoot, backSlot.rotation);
+				animator.SetIKRotation(AvatarIKGoal.RightFoot, frontSlot.rotation);
                 animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1f);
                 animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1f);
 
                 animator.bodyPosition = playerAnimation.GetBodyPosition();
 
-                var avgFeetDir = playerAnimation.GetFeetDirection(PlayerController.LEFT) + playerAnimation.GetFeetDirection(PlayerController.RIGHT);
+                var avgFeetDir = playerAnimation.GetFootDirection(PlayerController.LEFT) + playerAnimation.GetFootDirection(PlayerController.RIGHT);
                 avgFeetDir /= 2.0f;
-                animator.bodyRotation *= Quaternion.Euler(avgFeetDir.x, 0, -avgFeetDir.z);
+				animator.bodyRotation *= Quaternion.Euler(avgFeetDir.x, 0, footDirectionSign * avgFeetDir.z);
             }
             else
             {

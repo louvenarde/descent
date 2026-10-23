@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
         public Transform[] FeetSlots { get { return controller.feetSlots; } }
         public Vector2 LeftFootInput { get { return controller.LeftFootInput; } }
         public Vector2 RightFootInput { get { return controller.RightFootInput; } }
+		public bool IsGoofy { get { return controller.IsGoofy; } }
 
         private readonly PlayerController controller;
 
@@ -444,12 +445,12 @@ public class PlayerController : MonoBehaviour
 
     public Vector2 GetFrontFootInput()
     {
-        return IsGoofy ? LeftFootInput : RightFootInput;
+		return IsGoofy ? LeftFootInput : RightFootInput;
     }
 
     public Vector2 GetBackFootInput()
     {
-        return IsGoofy ? RightFootInput : LeftFootInput;
+		return IsGoofy ? RightFootInput : LeftFootInput;
     }
 
 
@@ -492,6 +493,7 @@ public class PlayerController : MonoBehaviour
 	private void Fall()
 	{
 		isFalling = true;
+		playerAnimation.transform.parent = null; // Otherwise it would be the Board's body
 
 		if (board) {
 			Vector3 fallVelocity = board.Velocity;
@@ -517,12 +519,30 @@ public class PlayerController : MonoBehaviour
         Vector2 back = GetBackFootDelayedInput();
 
         BoardController.BodyEffect bodyEffect = new BoardController.BodyEffect();
+
+		float torqueEffect = 0f;
+		{
+			float frontTorqueEffect = front.x * 0.5f; // Front alone is half torque
+			float backTorqueMultiplier = (Mathf.Sign(back.x) == Mathf.Sign(front.x)) ? 0.5f : 1.5f;
+
+			float backTorqueEffect = Mathf.Abs(back.x * backTorqueMultiplier) * front.x;
+
+			torqueEffect = frontTorqueEffect + backTorqueEffect;
+		}
+
         bodyEffect.torque = 
             RiderSheet.torqueEffect *
-            ((front.x + front.x * Mathf.Abs(back.x)) * 0.5f) *
+			torqueEffect *
             RiderSheet.torqueControlFromVelocityAmount.Evaluate(GetStableSpeedAmount());
+		
 		bodyEffect.tiltSide = RiderSheet.tiltEffectMultiplier * Mathf.Lerp(back.x, front.x, Mathf.Abs(front.x));
         bodyEffect.steepnessVelocityMultiplier = (GetSpeedMultiplierFromWeightDistribution() - 1f) * RiderSheet.weightSpeedBoostKmh;
+
+		bodyEffect.crossingDirections01 = 0f;
+		if (Mathf.Sign(front.x) != Mathf.Sign(back.x))
+		{
+			bodyEffect.crossingDirections01 = Mathf.Abs (back.x) * Mathf.Abs (front.x);
+		}
 
         bodyEffect.isFallen = IsFalling;
 
@@ -530,12 +550,12 @@ public class PlayerController : MonoBehaviour
     }
 
 
-	public float GetFallAmount(bool withImpact=false)
+	public float GetFallAmount(float impactEffectMultiplier = 0f)
 	{
 		Vector2 front = GetFrontFootDelayedInput();
 		Vector2 back = GetBackFootDelayedInput();
 
-		float fromImpact = withImpact ? RiderSheet.punishment.impactPunishmentEffect : 0f;
+		float fromImpact = RiderSheet.punishment.impactPunishmentEffect * impactEffectMultiplier;
 
 		float fromBackVelocity = 0f;
 		if (this.board.IsGrounded){
@@ -559,9 +579,9 @@ public class PlayerController : MonoBehaviour
 		);
 	}
 
-	private void FallIfFallAmountTooHigh(bool fromImpact = false)
+	private void FallIfFallAmountTooHigh(float impactEffectMultiplier=0f)
 	{
-		float fallAmount = GetFallAmount (fromImpact);
+		float fallAmount = GetFallAmount (impactEffectMultiplier);
 		if (fallAmount > 100f){
 			Fall ();
 		}
@@ -572,8 +592,8 @@ public class PlayerController : MonoBehaviour
         Vector2 output = input;
         if (IsGoofy)
         {
-            output.y = input.x;
-            output.x = input.y;
+            output.y = -input.x;
+            output.x = -	input.y;
         }
         else
         {
