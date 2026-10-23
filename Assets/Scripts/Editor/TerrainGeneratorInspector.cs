@@ -53,23 +53,21 @@ public class TerrainGeneratorInspector : Editor
             if (elementProp.isExpanded)
             {
                 EditorGUI.BeginChangeCheck();
+                DrawChildProperties(elementProp);
+                bool changed = EditorGUI.EndChangeCheck();
 
-                // there is no clean way to traverse only child property, so we need to find our sibbling manually...
-                SerializedProperty nextProp = elementProp.Copy(); nextProp.NextVisible(false);
-                EditorGUI.indentLevel++;
-                while(elementProp.NextVisible(true))
+                if (GUILayout.Button("Rebuild segment " + i))
                 {
-                    if (SerializedProperty.EqualContents(elementProp, nextProp)) // and check for it everytime we do NextVisible...
-                        break;
-                    EditorGUILayout.PropertyField(elementProp, true);
+                    terrainGenerator.dirty.Add(i);
+                    EditorUtility.SetDirty(terrainGenerator);
                 }
-                EditorGUI.indentLevel--;
 
-                if (EditorGUI.EndChangeCheck())
+                if (changed)
                 {
                     terrainGenerator.dirty.Add(i-1);
                     terrainGenerator.dirty.Add(i);
                     terrainGenerator.dirty.Add(i+1);
+                    EditorUtility.SetDirty(terrainGenerator);
                 }
             }
         }
@@ -83,5 +81,27 @@ public class TerrainGeneratorInspector : Editor
 
         if (GUILayout.Button("Rebuild"))
             terrainGenerator.Rebuild();
+        if (GUILayout.Button("Destroy & Rebuild"))
+            terrainGenerator.DestroyAndRebuild();
+    }
+
+    public void DrawChildProperties(SerializedProperty elementProp)
+    {
+        EditorGUI.indentLevel++;
+        // there is no clean way to traverse only child property, so we need to find our sibbling manually...
+        SerializedProperty nextProp = elementProp.Copy(); nextProp.NextVisible(false);
+        elementProp.NextVisible(true);
+        bool skipAdvance = false;
+        do
+        {
+            if (SerializedProperty.EqualContents(elementProp, nextProp)) // and check for it everytime we do NextVisible...
+                break;
+            bool expanded = EditorGUILayout.PropertyField(elementProp, false);
+            if (expanded)
+                DrawChildProperties(elementProp);
+            skipAdvance = expanded;
+        }
+        while (skipAdvance || elementProp.NextVisible(false));
+        EditorGUI.indentLevel--;
     }
 }
