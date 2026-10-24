@@ -40,6 +40,8 @@ public class BoardController : MonoBehaviour
 
     public bool IsGrounded { get { return groundHits > 0; } }
 
+	public float NoseDiveAmountM101 { get { return noseDiveTendency; } }
+
     public Vector3 Velocity { get { return velocity; } }
 
 	public Vector3 LocalVelocity { get { return transform.InverseTransformVector (Velocity); } }
@@ -199,10 +201,13 @@ public class BoardController : MonoBehaviour
 
     private void AddTorqueFromBodyEffect()
     {
-		float noseDiveEffect = Mathf.Clamp01 (noseDiveTendency);
+		float reducerFromVelocityAngle = Mathf.Clamp01(Mathf.Abs (velocityAngle) / 60f);
+
 		// If noseDive is Zero, we're going up
 		// If we're going up and we're crossing legs, it's time to stop applying torque
-		float multiplierFromSteepCross = 1f - ((1f - noseDiveEffect) * currentBodyEffect.crossingDirections01);
+		float multiplierFromSteepCross = 
+			1f - reducerFromVelocityAngle * currentBodyEffect.crossingDirections01;
+
 
         boardBody.AddTorque(
             boardBody.transform.up

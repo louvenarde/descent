@@ -9,6 +9,7 @@ public class RiderParameters : ScriptableObject
 		public float backCrossPunishmentEffect = 300f;
 		public float backFacingVelocityPunishmentEffect = 300f;
 		public float impactPunishmentEffect = 1000f;
+		public bool backwardAndStoppedPunish = true;
 	}
 
     [Range(10, 300)]
@@ -19,7 +20,10 @@ public class RiderParameters : ScriptableObject
     public float legResponsiveness = 20f;
 
     [Range(80, 300f)]
-    public float torqueEffect = 100f;
+	public float torqueEffect = 100f;
+
+	[Range(1f, 30f)]
+	public float crossTorqueMultipllier = 5f;
 
     public AnimationCurve torqueControlFromVelocityAmount = AnimationCurve.Linear(0f, 1f, 1f, 1f);
 

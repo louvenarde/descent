@@ -16,4 +16,4 @@ MonoBehaviour:
   minimumControlVelocityKmh: 10
   maxVisualTiltDegrees: 45
   grip: 0.4
-  gripRecoveryTimeSeconds: 1.5
+  gripRecoveryTimeSeconds: 2

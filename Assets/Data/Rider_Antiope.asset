@@ -14,6 +14,7 @@ MonoBehaviour:
   maxStableSpeedKph: 120
   legResponsiveness: 20
   torqueEffect: 300
+  crossTorqueMultipllier: 10
   torqueControlFromVelocityAmount:
     serializedVersion: 2
     m_Curve:
@@ -38,6 +39,7 @@ MonoBehaviour:
   tiltEffectMultiplier: 0.5
   weightSpeedBoostKmh: 30
   punishment:
-    backCrossPunishmentEffect: 100
-    backFacingVelocityPunishmentEffect: 300
+    backCrossPunishmentEffect: 80
+    backFacingVelocityPunishmentEffect: 1000
     impactPunishmentEffect: 1000
+    backwardAndStoppedPunish: 1

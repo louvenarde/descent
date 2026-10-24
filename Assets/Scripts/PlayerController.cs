@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     public const byte RIGHT = 1;
     public const byte FEET = 2;
 
+	private const float FALL_AMOUNT = 100f;
+
     public class HumanoidPlacement
     {
         public HumanoidParameters Parameters { get { return controller.parameters; } }
@@ -542,6 +544,8 @@ public class PlayerController : MonoBehaviour
 		if (Mathf.Sign(front.x) != Mathf.Sign(back.x))
 		{
 			bodyEffect.crossingDirections01 = Mathf.Abs (back.x) * Mathf.Abs (front.x);
+
+			bodyEffect.torque *= Mathf.Lerp (1f, RiderSheet.crossTorqueMultipllier, bodyEffect.crossingDirections01);
 		}
 
         bodyEffect.isFallen = IsFalling;
@@ -556,6 +560,15 @@ public class PlayerController : MonoBehaviour
 		Vector2 back = GetBackFootDelayedInput();
 
 		float fromImpact = RiderSheet.punishment.impactPunishmentEffect * impactEffectMultiplier;
+
+		if (RiderSheet.punishment.backwardAndStoppedPunish) {
+			if (smoothVelocity.Get ().sqrMagnitude < 0.01f) {
+
+				if (board.NoseDiveAmountM101 < 0) {
+					return FALL_AMOUNT;
+				}
+			}
+		}
 
 		float fromBackVelocity = 0f;
 		if (this.board.IsGrounded){
@@ -582,7 +595,7 @@ public class PlayerController : MonoBehaviour
 	private void FallIfFallAmountTooHigh(float impactEffectMultiplier=0f)
 	{
 		float fallAmount = GetFallAmount (impactEffectMultiplier);
-		if (fallAmount > 100f){
+		if (fallAmount >= FALL_AMOUNT){
 			Fall ();
 		}
 	}

@@ -19,6 +19,12 @@ public class PlayerCamera : MonoBehaviour {
     private float cameraHeight = 2f;
 
 	[SerializeField]
+	private float minFov = 60f;
+
+	[SerializeField]
+	private float maxFov = 120f;
+
+	[SerializeField]
 	private Camera cameraComponent;
 
 	[SerializeField]
@@ -43,7 +49,7 @@ public class PlayerCamera : MonoBehaviour {
 			float speed01 = Mathf.Clamp01 (controller.GetStableSpeedAmount ());
 
 			if (cameraComponent) {
-				cameraComponent.fieldOfView = Mathf.Lerp (80f, 110f, speed01);
+				cameraComponent.fieldOfView = Mathf.Lerp (minFov, maxFov, speed01);
 			}
 
 			if (speedLines) {
