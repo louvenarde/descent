@@ -69,7 +69,8 @@ public class TerrainGenerator : MonoBehaviour
 
     private void Build(int i)
     {
-        if (i < 0 || i > terrainDefinition.Count) return;
+        if (i < 0 || i >= terrainDefinition.Count) return;
+        if (!piecePrefab) return;
 
         if (i >= pieces.Count)
             pieces.AddRange(Enumerable.Repeat<TerrainPiece>(null, i - pieces.Count + 1));
@@ -83,17 +84,18 @@ public class TerrainGenerator : MonoBehaviour
     [ContextMenu("Rebuild")]
     public void Rebuild()
     {
-        DestroyAllPieces();
-
-        if (!piecePrefab) return;
-
         for (int i = 0; i < terrainDefinition.Count; i++)
             Build(i);
-
         dirty.Clear();
         spline.dirty.Clear();
     }
 
+    [ContextMenu("Destroy and rebuild")]
+    public void DestroyAndRebuild()
+    {
+        DestroyAllPieces();
+        Rebuild();
+    }
 
     public void InsertPieceAfter(int pos)
     {

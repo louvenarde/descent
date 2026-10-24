@@ -184,7 +184,7 @@ Material:
     m_Colors:
     - first:
         name: _Bottom
-      second: {r: 0.67165875, g: 0.76957554, b: 0.9044118, a: 0}
+      second: {r: 0.9091278, g: 0.89705884, b: 1, a: 1}
     - first:
         name: _Color
       second: {r: 1, g: 1, b: 1, a: 1}
@@ -193,7 +193,7 @@ Material:
       second: {r: 0, g: 0, b: 0, a: 1}
     - first:
         name: _Middle
-      second: {r: 1, g: 1, b: 1, a: 0}
+      second: {r: 0.9091278, g: 0.89705884, b: 1, a: 1}
     - first:
         name: _Tint
       second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
