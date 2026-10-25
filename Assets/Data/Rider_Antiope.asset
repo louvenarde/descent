@@ -8,7 +8,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c79615c1d3338114ca3b2f3093bc7617, type: 3}
+  m_Script: {fileID: 11500000, guid: 6eb4ed172321e884d9f7afc43f8467d2, type: 3}
   m_Name: Rider_Antiope
   m_EditorClassIdentifier: 
   maxStableSpeedKph: 120

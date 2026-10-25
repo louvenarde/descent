@@ -92,7 +92,7 @@ public class DebugPlayerInfoUI : MonoBehaviour
             backStickDelayed.rectTransform.localPosition =
                 Vector2.Scale(controller.GetBackFootDelayedInput(), backStickDelayed.rectTransform.sizeDelta) * 0.5f;
 
-            boardDebugText.text = controller.GetBoardDump() + "\n" + controller.HumanoidSheet.name + "\n" + controller.RiderSheet.name;
+            boardDebugText.text = controller.GetBoardDump() + "\n" + controller.HumanoidProfile.name + "\n" + controller.RiderProfile.name;
             playerProfileDebugText.text = controller.GetInputDump() ;
         }
     }

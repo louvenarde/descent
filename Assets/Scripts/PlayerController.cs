@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
 
     public class HumanoidPlacement
     {
-        public HumanoidParameters Parameters { get { return controller.parameters; } }
+        public HumanoidProfile Parameters { get { return controller.parameters; } }
         public Transform Board { get { return controller.boardTransform; } }
         public Transform[] FeetSlots { get { return controller.feetSlots; } }
         public Vector2 LeftFootInput { get { return controller.LeftFootInput; } }
@@ -300,14 +300,14 @@ public class PlayerController : MonoBehaviour
 
     [Header("Humanoid")]
     [SerializeField]
-    private HumanoidParameters parameters;
+    private HumanoidProfile parameters;
 
     [SerializeField]
     private bool goofy = false;
 
     [Header("Rider profile")]
     [SerializeField]
-    private RiderParameters riderParameters;
+	private RiderProfile profile;
 
 #if UNITY_EDITOR
     [Header("Input mock")]
@@ -372,9 +372,9 @@ public class PlayerController : MonoBehaviour
 
     public LegsPosture Posture { get { return posture; } }
 
-    public HumanoidParameters HumanoidSheet { get { return parameters; } }
+    public HumanoidProfile HumanoidProfile { get { return parameters; } }
 
-    public RiderParameters RiderSheet { get { return riderParameters; } }
+    public RiderProfile RiderProfile { get { return profile; } }
 
     public Transform Board { get { return board.transform; } }
 
@@ -412,13 +412,13 @@ public class PlayerController : MonoBehaviour
 
         delayedFootInput[PlayerController.LEFT] = 
             Vector2.Lerp(
-                delayedFootInput[PlayerController.LEFT], LeftFootInput, Mathf.Clamp01(Time.deltaTime * RiderSheet.legResponsiveness)
+                delayedFootInput[PlayerController.LEFT], LeftFootInput, Mathf.Clamp01(Time.deltaTime * RiderProfile.legResponsiveness)
             )
         ;
 
         delayedFootInput[PlayerController.RIGHT] =
             Vector2.Lerp(
-                delayedFootInput[PlayerController.RIGHT], RightFootInput, Mathf.Clamp01(Time.deltaTime * RiderSheet.legResponsiveness)
+                delayedFootInput[PlayerController.RIGHT], RightFootInput, Mathf.Clamp01(Time.deltaTime * RiderProfile.legResponsiveness)
             )
         ;
 
@@ -469,7 +469,7 @@ public class PlayerController : MonoBehaviour
 
     public float GetStableSpeedAmount()
     {
-        return GetSpeedKPH() / RiderSheet.maxStableSpeedKph;
+        return GetSpeedKPH() / RiderProfile.maxStableSpeedKph;
     }
 
     public Vector3 GetSpeedDirection()
@@ -533,19 +533,19 @@ public class PlayerController : MonoBehaviour
 		}
 
         bodyEffect.torque = 
-            RiderSheet.torqueEffect *
+            RiderProfile.torqueEffect *
 			torqueEffect *
-            RiderSheet.torqueControlFromVelocityAmount.Evaluate(GetStableSpeedAmount());
+            RiderProfile.torqueControlFromVelocityAmount.Evaluate(GetStableSpeedAmount());
 		
-		bodyEffect.tiltSide = RiderSheet.tiltEffectMultiplier * Mathf.Lerp(back.x, front.x, Mathf.Abs(front.x));
-        bodyEffect.steepnessVelocityMultiplier = (GetSpeedMultiplierFromWeightDistribution() - 1f) * RiderSheet.weightSpeedBoostKmh;
+		bodyEffect.tiltSide = RiderProfile.tiltEffectMultiplier * Mathf.Lerp(back.x, front.x, Mathf.Abs(front.x));
+        bodyEffect.steepnessVelocityMultiplier = (GetSpeedMultiplierFromWeightDistribution() - 1f) * RiderProfile.weightSpeedBoostKmh;
 
 		bodyEffect.crossingDirections01 = 0f;
 		if (Mathf.Sign(front.x) != Mathf.Sign(back.x))
 		{
 			bodyEffect.crossingDirections01 = Mathf.Abs (back.x) * Mathf.Abs (front.x);
 
-			bodyEffect.torque *= Mathf.Lerp (1f, RiderSheet.crossTorqueMultipllier, bodyEffect.crossingDirections01);
+			bodyEffect.torque *= Mathf.Lerp (1f, RiderProfile.crossTorqueMultipllier, bodyEffect.crossingDirections01);
 		}
 
         bodyEffect.isFallen = IsFalling;
@@ -559,9 +559,9 @@ public class PlayerController : MonoBehaviour
 		Vector2 front = GetFrontFootDelayedInput();
 		Vector2 back = GetBackFootDelayedInput();
 
-		float fromImpact = RiderSheet.punishment.impactPunishmentEffect * impactEffectMultiplier;
+		float fromImpact = RiderProfile.punishment.impactPunishmentEffect * impactEffectMultiplier;
 
-		if (RiderSheet.punishment.backwardAndStoppedPunish) {
+		if (RiderProfile.punishment.backwardAndStoppedPunish) {
 			if (smoothVelocity.Get ().sqrMagnitude < 0.01f) {
 
 				if (board.NoseDiveAmountM101 < 0) {
@@ -574,13 +574,13 @@ public class PlayerController : MonoBehaviour
 		if (this.board.IsGrounded){
 			float dot = Vector3.Dot (board.transform.forward, smoothSpeedDirection.Get());
 			float backSpeedAmount = Mathf.Clamp01 (-dot);
-			fromBackVelocity = RiderSheet.punishment.backFacingVelocityPunishmentEffect * backSpeedAmount;
+			fromBackVelocity = RiderProfile.punishment.backFacingVelocityPunishmentEffect * backSpeedAmount;
 		}
 
 		float fromBackTwist = 0f;
 		if (this.board.IsGrounded){
 
-			fromBackTwist = Mathf.Clamp01 (Mathf.Abs (back.x) - Mathf.Abs (front.x)) * RiderSheet.punishment.backCrossPunishmentEffect;
+			fromBackTwist = Mathf.Clamp01 (Mathf.Abs (back.x) - Mathf.Abs (front.x)) * RiderProfile.punishment.backCrossPunishmentEffect;
 		}
 
 		float fallMultiplier = GetStableSpeedAmount ();

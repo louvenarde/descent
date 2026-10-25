@@ -155,6 +155,8 @@ public class BoardController : MonoBehaviour
 
             RefreshPhysicalMaterial();
 
+			RefreshRigidBodyDrag ();
+
             AddTorqueFromBodyEffect();
 
 			if (IsGrounded) {
@@ -261,6 +263,11 @@ public class BoardController : MonoBehaviour
             smoothVelocityAngle.Add(velocityAngle);
         }
     }
+
+	private void RefreshRigidBodyDrag()
+	{
+		boardBody.angularDrag = Mathf.Lerp (profile.turnDrag, profile.crossedTurnDrag, currentBodyEffect.crossingDirections01);
+	}
 
     private void RefreshPhysicalMaterial()
     {

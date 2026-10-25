@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu]
-public class HumanoidParameters : ScriptableObject
+public class HumanoidProfile : ScriptableObject
 {
     public float thighLength = 0.35f;
 

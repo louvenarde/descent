@@ -18,4 +18,11 @@ public class BoardProfile : ScriptableObject
 
 	[Range(0f, 3f)]
 	public float gripRecoveryTimeSeconds = 1.5f;
+
+	[Range(0.5f, 5f)]
+	public float turnDrag = 1f;
+
+	[Range(0.5f, 50f)]
+	public float crossedTurnDrag = 10f;
+
 }

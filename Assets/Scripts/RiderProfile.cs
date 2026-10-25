@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu]
-public class RiderParameters : ScriptableObject
+public class RiderProfile : ScriptableObject
 {
 	[System.Serializable]
 	public class Punishment

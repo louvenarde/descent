@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 51902846}
-  m_IndirectSpecularColor: {r: 0.40976295, g: 0.5306678, b: 0.9073952, a: 1}
+  m_IndirectSpecularColor: {r: 0.6066429, g: 0.6565499, b: 0.96568817, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -235,106 +235,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 809680001}
-  - {fileID: 220383499}
-  - {fileID: 1760026564}
   lodMeshes:
   - {fileID: 408838410}
   - {fileID: 1720549049}
   - {fileID: 1267492611}
-  outgoingConnectors:
-  - exitPoint: {x: -41.068405, y: -16.946474, z: 0.00000079085186}
-    exitAngle: 0
-    exitDirection: {x: -1.1449999, y: 0, z: 0.0022514344}
-    exitWidth: 45.8
-    exitValleyDepth: 2.55
-    exitRow:
-    - {x: -22.9, y: -0.0029967471}
-    - {x: -21.755, y: -0.02135416}
-    - {x: -20.609999, y: -0.056185275}
-    - {x: -19.465, y: -0.10553067}
-    - {x: -18.32, y: -0.16743092}
-    - {x: -17.175, y: -0.23992653}
-    - {x: -16.029999, y: -0.32105818}
-    - {x: -14.885, y: -0.4088663}
-    - {x: -13.74, y: -0.5013916}
-    - {x: -12.595, y: -0.5966745}
-    - {x: -11.45, y: -0.6927557}
-    - {x: -10.304999, y: -0.78767574}
-    - {x: -9.159999, y: -0.8794751}
-    - {x: -8.015, y: -0.96619445}
-    - {x: -6.8700004, y: -1.0458741}
-    - {x: -5.725, y: -1.1165551}
-    - {x: -4.5799994, y: -1.1762778}
-    - {x: -3.4349995, y: -1.2230824}
-    - {x: -2.2900004, y: -1.25501}
-    - {x: -1.1450002, y: -1.2701008}
-    - {x: 0, y: -1.2663957}
-    - {x: 1.1449989, y: -1.2419349}
-    - {x: 2.2900004, y: -1.1947591}
-    - {x: 3.4349995, y: -1.1229091}
-    - {x: 4.580001, y: -1.024425}
-    - {x: 5.725, y: -0.89734834}
-    - {x: 6.869999, y: -0.7397187}
-    - {x: 8.015, y: -0.5495764}
-    - {x: 9.159999, y: -0.3249631}
-    - {x: 10.305001, y: 0.1728148}
-    - {x: 11.45, y: 0.9268747}
-    - {x: 12.594998, y: 1.1105436}
-    - {x: 13.740001, y: 1.1482239}
-    - {x: 14.884999, y: 1.1764338}
-    - {x: 16.03, y: 1.1970574}
-    - {x: 17.175, y: 1.2119786}
-    - {x: 18.319998, y: 1.2230811}
-    - {x: 19.465, y: 1.2322489}
-    - {x: 20.609999, y: 1.2413657}
-    - {x: 21.755001, y: 1.2523154}
-    - {x: 22.9, y: 1.266982}
-  - exitPoint: {x: -41.066814, y: -16.924095, z: -0.00000018165225}
-    exitAngle: 0
-    exitDirection: {x: -2.2900002, y: 0, z: 0.0045028687}
-    exitWidth: 45.8
-    exitValleyDepth: 2.55
-    exitRow:
-    - {x: -22.9, y: -0.0029967471}
-    - {x: -20.609999, y: -0.056185275}
-    - {x: -18.32, y: -0.16743092}
-    - {x: -16.029999, y: -0.32105818}
-    - {x: -13.74, y: -0.5013916}
-    - {x: -11.45, y: -0.6927557}
-    - {x: -9.159999, y: -0.8794751}
-    - {x: -6.8700004, y: -1.0458741}
-    - {x: -4.5799994, y: -1.1762778}
-    - {x: -2.2900004, y: -1.25501}
-    - {x: 0, y: -1.2663957}
-    - {x: 2.2900004, y: -1.1947591}
-    - {x: 4.580001, y: -1.024425}
-    - {x: 6.869999, y: -0.7397187}
-    - {x: 9.159999, y: -0.3249631}
-    - {x: 11.45, y: 0.9268747}
-    - {x: 13.740001, y: 1.1482239}
-    - {x: 16.03, y: 1.1970574}
-    - {x: 18.319998, y: 1.2230811}
-    - {x: 20.609999, y: 1.2413657}
-    - {x: 22.9, y: 1.266982}
-  - exitPoint: {x: -41.06549, y: -16.905571, z: 0.00000034679067}
-    exitAngle: 0
-    exitDirection: {x: -4.58, y: 0, z: 0.0090057375}
-    exitWidth: 45.8
-    exitValleyDepth: 2.55
-    exitRow:
-    - {x: -22.9, y: -0.0029967471}
-    - {x: -18.32, y: -0.16743092}
-    - {x: -13.74, y: -0.5013916}
-    - {x: -9.159999, y: -0.8794751}
-    - {x: -4.5799994, y: -1.1762778}
-    - {x: 0, y: -1.2663957}
-    - {x: 4.580001, y: -1.024425}
-    - {x: 9.159999, y: -0.3249631}
-    - {x: 13.740001, y: 1.1482239}
-    - {x: 18.319998, y: 1.2230811}
-    - {x: 22.9, y: 1.266982}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
+  outgoingConnectors: []
 --- !u!43 &62365632
 Mesh:
   m_ObjectHideFlags: 0
@@ -853,29 +763,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 281053202}
   m_Mesh: {fileID: 62365632}
---- !u!21 &288600282
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Unlit/Texture
-  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  m_SavedProperties:
-    serializedVersion: 2
-    m_TexEnvs:
-    - first:
-        name: _MainTex
-      second:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors: []
 --- !u!1 &302393602
 GameObject:
   m_ObjectHideFlags: 0
@@ -1092,6 +979,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   - nbQuadWidth: 40
     nbQuadLength: 80
     exitWidthMeters: 48.6
@@ -1119,6 +1046,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   - nbQuadWidth: 40
     nbQuadLength: 80
     exitWidthMeters: 49
@@ -1166,6 +1133,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   - nbQuadWidth: 40
     nbQuadLength: 80
     exitWidthMeters: 50
@@ -1213,6 +1220,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   - nbQuadWidth: 40
     nbQuadLength: 80
     exitWidthMeters: 50
@@ -1260,6 +1307,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   - nbQuadWidth: 40
     nbQuadLength: 80
     exitWidthMeters: 50
@@ -1307,6 +1394,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   - nbQuadWidth: 40
     nbQuadLength: 80
     exitWidthMeters: 50
@@ -1354,6 +1481,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   - nbQuadWidth: 40
     nbQuadLength: 80
     exitWidthMeters: 47.8
@@ -1396,6 +1563,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   pieces: []
   debugShowPlane: 0
   debugShowSegmentNumber: 0
@@ -2852,6 +3059,29 @@ Mesh:
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshOptimized: 0
+--- !u!21 &603119808
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Unlit/Texture
+  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+    - first:
+        name: _MainTex
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors: []
 --- !u!1 &618194364
 GameObject:
   m_ObjectHideFlags: 0
@@ -3979,14 +4209,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 309750781}
-  - {fileID: 705063826}
-  - {fileID: 1989048790}
   lodMeshes:
   - {fileID: 697389282}
   - {fileID: 389269550}
   - {fileID: 808549811}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors: []
 --- !u!1 &861139356
 GameObject:
@@ -4592,7 +4823,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 288600282}
+  - {fileID: 603119808}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_ProbeAnchor: {fileID: 0}
@@ -4710,14 +4941,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 1478327480}
-  - {fileID: 618194367}
-  - {fileID: 1265531071}
   lodMeshes:
   - {fileID: 1606007964}
   - {fileID: 1611551632}
   - {fileID: 686160066}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors: []
 --- !u!1 &1022879346
 GameObject:
@@ -5265,6 +5497,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   - nbQuadWidth: 40
     nbQuadLength: 80
     exitWidthMeters: 41.6
@@ -5297,6 +5569,46 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 0
+    leftBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+    rightBorder:
+      nbQuadWidth: 5
+      width: 25
+      height: 1
+      curveNormalized:
+        serializedVersion: 2
+        m_Curve:
+        - time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
   pieces:
   - {fileID: 61833604}
   - {fileID: 1905482491}
@@ -5865,14 +6177,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 2103927749}
-  - {fileID: 253643534}
-  - {fileID: 1535167808}
   lodMeshes:
   - {fileID: 914724119}
   - {fileID: 550747072}
   - {fileID: 728500409}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors: []
 --- !u!43 &1297184549
 Mesh:
@@ -6249,14 +6562,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 1453263640}
-  - {fileID: 281053205}
-  - {fileID: 1756870989}
   lodMeshes:
   - {fileID: 1088328824}
   - {fileID: 62365632}
   - {fileID: 927212156}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors: []
 --- !u!1 &1423054871
 GameObject:
@@ -6340,14 +6654,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 2028167525}
-  - {fileID: 302393605}
-  - {fileID: 250985391}
   lodMeshes:
   - {fileID: 2009031131}
   - {fileID: 1533577592}
   - {fileID: 737449209}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors: []
 --- !u!43 &1430395904
 Mesh:
@@ -7387,14 +7702,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 418970253}
-  - {fileID: 1031260228}
-  - {fileID: 1487847701}
   lodMeshes:
   - {fileID: 1570719625}
   - {fileID: 913312519}
   - {fileID: 1430395904}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors: []
 --- !u!43 &1606007964
 Mesh:
@@ -7813,14 +8129,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 1826371507}
-  - {fileID: 999559173}
-  - {fileID: 967426259}
   lodMeshes:
   - {fileID: 2126693370}
   - {fileID: 453303104}
   - {fileID: 404837796}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors: []
 --- !u!1 &1719455059
 GameObject:
@@ -8850,7 +9167,7 @@ MonoBehaviour:
   playerAnimation: {fileID: 1083435617}
   parameters: {fileID: 11400000, guid: e879e96c56738aa42bd87a0a1e25e57b, type: 2}
   goofy: 0
-  riderParameters: {fileID: 11400000, guid: af5657f4c6a15924b9d9da2d7b7b7b8b, type: 2}
+  profile: {fileID: 11400000, guid: af5657f4c6a15924b9d9da2d7b7b7b8b, type: 2}
   mock: 0
   leftStick: {x: 0, y: 0}
   rightStick: {x: 0, y: 0}
@@ -9002,14 +9319,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 685864246}
-  - {fileID: 1118820917}
-  - {fileID: 1461894124}
   lodMeshes:
   - {fileID: 1297184549}
   - {fileID: 1784575586}
   - {fileID: 1506251352}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors:
   - exitPoint: {x: -234.06651, y: -45.754967, z: 0.000015677475}
     exitAngle: 0
@@ -9058,6 +9376,10 @@ MonoBehaviour:
     - {x: 18.72, y: 1.2413657}
     - {x: 19.76, y: 1.2523154}
     - {x: 20.8, y: 1.266982}
+    leftSide: []
+    leftSideExitRow: []
+    rightSide: []
+    rightSideExitRow: []
   - exitPoint: {x: -234.06569, y: -45.74385, z: 0.000016076225}
     exitAngle: 0
     exitDirection: {x: -2.08, y: 0, z: 0.0045028687}
@@ -9085,6 +9407,10 @@ MonoBehaviour:
     - {x: 16.639997, y: 1.2230811}
     - {x: 18.72, y: 1.2413657}
     - {x: 20.8, y: 1.266982}
+    leftSide: []
+    leftSideExitRow: []
+    rightSide: []
+    rightSideExitRow: []
   - exitPoint: {x: -234.06165, y: -45.687107, z: 0.000015432184}
     exitAngle: 0
     exitDirection: {x: -4.16, y: 0, z: 0.0090057375}
@@ -9102,6 +9428,10 @@ MonoBehaviour:
     - {x: 12.4800005, y: 1.1482239}
     - {x: 16.639997, y: 1.2230811}
     - {x: 20.8, y: 1.266982}
+    leftSide: []
+    leftSideExitRow: []
+    rightSide: []
+    rightSideExitRow: []
 --- !u!1 &1918343634
 GameObject:
   m_ObjectHideFlags: 0
@@ -9212,11 +9542,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 1267665378}
-  - {fileID: 1719455062}
-  - {fileID: 1790030119}
   lodMeshes: []
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors: []
 --- !u!1 &1966824235
 GameObject:
@@ -9300,14 +9631,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8929b84346b1e74ea9aab121a46ee33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lodFilters:
-  - {fileID: 521003561}
-  - {fileID: 262875855}
-  - {fileID: 783225095}
   lodMeshes:
   - {fileID: 596703455}
   - {fileID: 1241316652}
   - {fileID: 501491888}
+  mainPieceLODGroup: {fileID: 0}
+  meshBarrierLeft: {fileID: 0}
+  leftBorderLODGroup: {fileID: 0}
+  meshBarrierRight: {fileID: 0}
+  rightBorderLODGroup: {fileID: 0}
   outgoingConnectors: []
 --- !u!1 &1978240173
 GameObject:
