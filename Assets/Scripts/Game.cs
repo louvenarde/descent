@@ -9,8 +9,30 @@ public class Game : MonoBehaviour
 
     public static Game i;
 
+	public Level Level { get; private set; }
+
+	private event Action OnLevelLoaded;
+
     void Awake()
     {
         i = this;
     }
+
+	public void OnceLevelLoaded(Action callback)
+	{
+		if (Level) {
+			callback ();
+		} else {
+			OnLevelLoaded += callback;
+		}
+	}
+
+	public void RegisterLevel(Level level)
+	{
+		Level = level;
+		if (OnLevelLoaded != null) {
+			OnLevelLoaded.Invoke ();
+			OnLevelLoaded = null;
+		}
+	}
 }

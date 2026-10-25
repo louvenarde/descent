@@ -13,6 +13,11 @@ using UnityEditor;
 [ExecuteInEditMode]
 public class TerrainGenerator : MonoBehaviour
 {
+	public IList<TerrainPiece> Pieces { get { return pieces; } }
+
+	[SerializeField]
+	private List<TerrainPiece> pieces = new List<TerrainPiece>();
+
 #if UNITY_EDITOR
     public TerrainPiece piecePrefab;
 
@@ -21,9 +26,6 @@ public class TerrainGenerator : MonoBehaviour
 
     [SerializeField]
     public List<TerrainPieceInputData> terrainDefinition = new List<TerrainPieceInputData>();
-
-    [SerializeField]
-    private List<TerrainPiece> pieces = new List<TerrainPiece>();
 
     [NonSerialized]
     public HashSet<int> dirty = new HashSet<int>();

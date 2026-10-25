@@ -20,6 +20,13 @@ public class PlayerAnimatorIK : MonoBehaviour {
     [SerializeField]
     private bool ikHints = true;
 
+	private void Update(){
+		if (playerAnimation) {
+			animator.SetBool ("IsRiding", true);
+			animator.SetBool ("IsGoofy", playerAnimation.IsGoofy);
+		}
+	}
+
     private void OnAnimatorIK()
     {
         if (playerAnimation)
