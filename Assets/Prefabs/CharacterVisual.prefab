@@ -2068,8 +2068,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 95000010267585850}
   playerAnimation: {fileID: 114000012614347074}
-  leftFoot: {fileID: 0}
-  rightFoot: {fileID: 0}
   lookAt: 0
   ikPlacement: 1
   ikHints: 1
