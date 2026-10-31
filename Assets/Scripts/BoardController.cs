@@ -14,6 +14,18 @@ public class BoardController : MonoBehaviour
 		public float crossingDirections01;
     }
 
+	[System.Serializable]
+	public struct LocalFeatureSwitches
+	{
+		public bool ignoreBodyEffect;
+		public bool disableThrustBending;
+		public bool ignoreMaxSpeedCap;
+		public bool disableSympatheticVelocity;
+	}
+
+	[SerializeField]
+	private LocalFeatureSwitches switches;
+
     [SerializeField]
     private BoardProfile profile;
 
@@ -131,50 +143,77 @@ public class BoardController : MonoBehaviour
     {
         velocity = transform.position - lastPosition;
 
-        if (currentBodyEffect.isFallen)
-        {
-            // Do nothing
+		if (currentBodyEffect.isFallen) {
+			// Do nothing
 
 			dynamicPhysicsMaterial.dynamicFriction = 1;
-        }
-        else
-        {
+		} else {
 			if (PlaceOnGround ()) {
 				// Grounded status has changed
 				if (IsGrounded) {
 					// We just landed
 
 					float dot = Vector3.Dot (transform.forward, Velocity.normalized);
-					gripMultiplier = Mathf.Clamp01(dot); // If we landed facing velocity we keep the grip, otherwise we lose it
+					gripMultiplier = Mathf.Clamp01 (dot); // If we landed facing velocity we keep the grip, otherwise we lose it
 				}
 			}
 
-            RefreshMaths();
+			RefreshMaths ();
 
-            RefreshTilt();
+			RefreshTilt ();
 
-            RefreshPhysicalMaterial();
+			RefreshPhysicalMaterial ();
 
 			RefreshRigidBodyDrag ();
 
-            AddTorqueFromBodyEffect();
+			if (!switches.ignoreBodyEffect) {
+				AddTorqueFromBodyEffect ();
+			}
 
 			if (IsGrounded) {
 
-				ModifyGripFromBodyEffect ();
+				if (!switches.ignoreBodyEffect) {
+					ModifyGripFromBodyEffect ();
+				}
 
-				BendThrustTowardsDirection ();
 
-				ModifySpeedFromBodyEffect ();
+				if (!switches.disableThrustBending) {
+					BendThrustTowardsDirection ();
+				}
 
-				AddSympatheticAngularVelocity ();
+				if (!switches.ignoreBodyEffect) {
+					ModifySpeedFromBodyEffect ();
+				}
+
+
+				if (!switches.disableSympatheticVelocity) {
+					AddSympatheticAngularVelocity ();
+				}
 
 				RecoverGrip ();
 			}
-        }
+
+			if (!switches.ignoreMaxSpeedCap) {
+				CapMaximumSpeed ();
+			}
+		}
 
         lastPosition = transform.position;
     }
+
+	private void CapMaximumSpeed()
+	{
+		float maxSpeedMs = profile.maxSpeedKmh / 3.6f;
+		float bodyVelocity = boardBody.velocity.magnitude;
+		float overstep = bodyVelocity - maxSpeedMs;
+
+		if (overstep > 0f) {
+			boardBody.AddForce (-boardBody.velocity.normalized * overstep, ForceMode.VelocityChange);
+//			Debug.Log (string.Format ("Cap by adding a {0} m/s negative velocity", overstep));
+		} else {
+//			Debug.Log (string.Format ("{0:n1} < {1:n1}\t({2:N1})", bodyVelocity, maxSpeedMs, (velocity / Time.fixedDeltaTime).magnitude));
+		}
+	}
 
 	private void RecoverGrip()
 	{
@@ -229,9 +268,12 @@ public class BoardController : MonoBehaviour
     private void BendThrustTowardsDirection()
     {
 		Vector3 velocityWithoutGravity = new Vector3 (boardBody.velocity.x, 0f, boardBody.velocity.z);
-		Quaternion rotationTowardsDirection = Quaternion.FromToRotation (velocityWithoutGravity.normalized, boardBody.transform.forward);
+		Vector3 flatForward = new Vector3 (boardBody.transform.forward.x, 0f, boardBody.transform.forward.z).normalized;
 
-		Quaternion lerpedRotation = Quaternion.Lerp (Quaternion.identity, rotationTowardsDirection, profile.grip * gripMultiplier);
+		Quaternion rotationTowardsDirection = Quaternion.FromToRotation (velocityWithoutGravity.normalized, flatForward);
+
+		float grip = profile.grip * gripMultiplier;
+		Quaternion lerpedRotation = Quaternion.Lerp (Quaternion.identity, rotationTowardsDirection, grip);
 
 		boardBody.velocity = lerpedRotation * velocityWithoutGravity + Vector3.up * boardBody.velocity.y;
 	} 
@@ -311,7 +353,6 @@ public class BoardController : MonoBehaviour
 
         if (groundHits > 0)
         {
-            Vector3 center = (hits[0] + hits[1]) / 2;
             Quaternion rotation = Quaternion.LookRotation(hits[0] - hits[1]);
             boardElementsParent.rotation = rotation;
         }

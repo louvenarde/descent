@@ -58,9 +58,7 @@ public class Gate : MonoBehaviour {
 			PlayerGateCollider playerCollider = arg1.gameObject.GetComponent<PlayerGateCollider> ();
 			if (playerCollider) {
 				if (playerCollider.GetController ()) {
-					if (OnGateTriggered != null) {
-						OnGateTriggered.Invoke (this, playerCollider.GetController ());	
-					}
+					OnGateTriggered.Invoke (this, playerCollider.GetController ());	
 				}
 			}
 		}

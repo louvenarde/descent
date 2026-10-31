@@ -466,7 +466,7 @@ public class PlayerController : MonoBehaviour
         if (board)
         {
             // TODO Planar speed based on transform.up to eliminate up axis speed
-            return (board.Velocity.magnitude / Time.deltaTime) * 3.6f;
+			return (board.Velocity.magnitude / Time.fixedDeltaTime) * 3.6f;
         }
 
         return 0f;

@@ -13,7 +13,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sympatheticCorrectionForce: 5
   maxEdgeFriction: 0.5
+  maxSpeedKmh: 150
   minimumControlVelocityKmh: 10
   maxVisualTiltDegrees: 45
   grip: 0.4
   gripRecoveryTimeSeconds: 2
+  turnDrag: 1
+  crossedTurnDrag: 10

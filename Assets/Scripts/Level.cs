@@ -17,6 +17,8 @@ public class Level : MonoBehaviour {
 
 	[Header("Optional")]
 	[SerializeField]
+	private float minimumDistanceBetweenAutoGates = 100f;
+	[SerializeField]
 	private Gate startGate;
 
 	[SerializeField]
@@ -76,15 +78,24 @@ public class Level : MonoBehaviour {
 			endGate.SetGateConnector(generator.Pieces[generator.Pieces.Count-2].OutgoingConnector);
 		}
 
-		startGate.name = "END GATE";
+		endGate.name = "END GATE";
 		activeGates.Add(endGate);
 
 		if (splitSegmentGates == null || splitSegmentGates.Length <= 0) {
 			var splitGatesList = new List<Gate> ();
+			Vector3 lastPosition = Vector3.one * -10000f;
 			for (int i = 1; i < generator.Pieces.Count - 2; i++) {
+				Vector3 position = generator.Pieces [i].OutgoingConnector.exitPoint;
+
+				if (Vector3.Distance (lastPosition, position) < minimumDistanceBetweenAutoGates) {
+					continue;
+				}
+
 				var gate = Gate.Instantiate (gatePrefab, this.transform) as Gate;
 				gate.SetGateConnector(generator.Pieces[i].OutgoingConnector);
 				splitGatesList.Add (gate);
+			
+				lastPosition = position;
 			}
 
 			splitSegmentGates = splitGatesList.ToArray ();
@@ -112,6 +123,8 @@ public class Level : MonoBehaviour {
 
 	void OnGateTriggeredCallback (Gate gate, PlayerController player)
 	{
+		Debug.Log (string.Format ("Gate hit {0} by {1}", gate, player));
+
 		if (OnGateTriggered != null) {
 			OnGateTriggered.Invoke (gate, player);
 		}

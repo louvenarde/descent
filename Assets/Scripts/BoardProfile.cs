@@ -7,6 +7,9 @@ public class BoardProfile : ScriptableObject
 
     public float maxEdgeFriction = 30f;
 
+	[Range(10, 300)]
+	public int maxSpeedKmh = 300;
+
     [Range(1f, 10f)]
     public float minimumControlVelocityKmh = 4f;
 
@@ -24,5 +27,4 @@ public class BoardProfile : ScriptableObject
 
 	[Range(0.5f, 50f)]
 	public float crossedTurnDrag = 10f;
-
 }

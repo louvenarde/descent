@@ -69,35 +69,30 @@ public class TerrainPiece : MonoBehaviour
             collider = gameObject.AddComponent<MeshCollider>();
         collider.sharedMesh = lodMeshes[lodMeshes.Count - 1];
 
+		// Border and barrier creation
+		{
+			LODGroup[] groups = new LODGroup[]{ leftBorderLODGroup, rightBorderLODGroup };
+			BorderInputData[] borderInputData =  new BorderInputData[]{ inputData.leftBorder, inputData.rightBorder };
+			MeshFilter[] filters = new MeshFilter[]{ meshBarrierLeft, meshBarrierRight };
+			bool[] isLeft = new bool[]{ true, false };
 
-        var lBorderLods = leftBorderLODGroup.GetLODs();
-        for (int lod = 0; lod < lBorderLods.Length; lod++)
-        {
-            Mesh borderTest = new Mesh();
-            CreateBorder(borderTest, inputData.leftBorder, spline, previousPiece, index, lod, true);
-            lBorderLods[lod].renderers[0].GetComponent<MeshFilter>().sharedMesh = borderTest;
-        }
-        leftBorderLODGroup.RecalculateBounds();
+			for (int side = 0; side < 2; side++) {
+				Mesh barrierMesh = new Mesh();
 
-        Mesh barrierLeft = new Mesh();
-        CreateBarrier(barrierLeft, spline, index, true);
-        meshBarrierLeft.sharedMesh = barrierLeft;
-        meshBarrierLeft.GetComponent<MeshCollider>().sharedMesh = barrierLeft;
+				var borderLods = groups[side].GetLODs ();
+				for (int lod = 0; lod < borderLods.Length; lod++) {
+					Mesh borderTest = new Mesh ();
+					CreateBorder (borderTest, borderInputData[side], spline, previousPiece, index, lod, isLeft[side]);
+					borderLods [lod].renderers [0].GetComponent<MeshFilter> ().sharedMesh = borderTest;
+				}
 
+				groups[side].RecalculateBounds ();
 
-        var rBorderLods = rightBorderLODGroup.GetLODs();
-        for (int lod = 0; lod < rBorderLods.Length; lod++)
-        {
-            Mesh borderTest = new Mesh();
-            CreateBorder(borderTest, inputData.rightBorder, spline, previousPiece, index, lod, false);
-            rBorderLods[lod].renderers[0].GetComponent<MeshFilter>().sharedMesh = borderTest;
-        }
-        rightBorderLODGroup.RecalculateBounds();
-
-        Mesh barrierRight = new Mesh();
-        CreateBarrier(barrierRight, spline, index, false);
-        meshBarrierRight.sharedMesh = barrierRight;
-        meshBarrierRight.GetComponent<MeshCollider>().sharedMesh = barrierRight;
+				CreateBarrier (barrierMesh, spline, index, isLeft[side]);
+				filters[side].sharedMesh = barrierMesh;
+				filters[side].GetComponent<MeshCollider> ().sharedMesh = barrierMesh;
+			}
+		}
     }
 
     private void CreateMesh(Mesh inMesh, TerrainPieceInputData inputData, BezierSpline spline, TerrainPiece prevPiece, int index, int lod)
@@ -285,6 +280,7 @@ public class TerrainPiece : MonoBehaviour
                 }
             }
         }
+
         GenerateMesh(inMesh, points, uv0, nbQuadWidth, nbQuadLength, leftSide);
     }
 

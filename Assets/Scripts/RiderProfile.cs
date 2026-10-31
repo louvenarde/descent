@@ -15,7 +15,6 @@ public class RiderProfile : ScriptableObject
     [Range(10, 300)]
     public int maxStableSpeedKph;
 
-
     [Range(1f, 120f)]
     public float legResponsiveness = 20f;
 

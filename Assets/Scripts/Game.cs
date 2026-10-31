@@ -7,6 +7,10 @@ public class Game : MonoBehaviour
 {
     public const byte PLAYER_COUNT = 1;
 
+	public struct FeatureSwitches
+	{
+	}
+
     public static Game i;
 
 	public Level Level { get; private set; }

@@ -167,9 +167,6 @@ public class PlayerAnimation : MonoBehaviour
     [SerializeField]
     private bool placeHipCenter = false;
 
-    [SerializeField]
-    private bool rotateHipCenter = false;
-
 
     [SerializeField]
     private LegSkeleton legs;
