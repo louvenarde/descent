@@ -47,6 +47,8 @@ public class TerrainPiece : MonoBehaviour
     [SerializeField]
     List<Connector> outgoingConnectors;
 
+	public Connector OutgoingConnector { get { return outgoingConnectors [0]; } }
+
 #if UNITY_EDITOR
     public void Build(TerrainPiece previousPiece, TerrainPieceInputData inputData, BezierSpline spline, int index)
     {

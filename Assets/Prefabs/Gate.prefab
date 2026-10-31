@@ -21,7 +21,7 @@ GameObject:
   - 4: {fileID: 4000010391990844}
   - 65: {fileID: 65000010104007470}
   - 114: {fileID: 114000013912400566}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GateTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000010188134792}
   - 114: {fileID: 114000011804588454}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Gate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,6 +96,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colliders:
   - {fileID: 114000013912400566}
+  segmentName: 
 --- !u!114 &114000013912400566
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -4,12 +4,6 @@ using System.Collections;
 public class PlayerCamera : MonoBehaviour {
 
     [SerializeField]
-    private PlayerAnimation playerAnim;
-
-	[SerializeField]
-	private PlayerController controller;
-
-    [SerializeField]
     private Material debugMaterial;
 
     [SerializeField]
@@ -30,10 +24,40 @@ public class PlayerCamera : MonoBehaviour {
 	[SerializeField]
 	private ParticleSystem speedLines;
 
+	private PlayerController controller;
+
+	private PlayerAnimation playerAnim;
+
 	private SmoothVector smoothPlayerPosition = new SmoothVector();
+
+	private void Start()
+	{
+
+		if (Game.i)
+		{
+			Game.i.OnceLevelLoaded (RegisterPlayer);
+		}
+	}
+
+	private void RegisterPlayer()
+	{
+		PlayerController player = Game.i.GetPlayer (0);
+		controller = player;
+		playerAnim = player.Animation;
+	}
+
 
     private void FixedUpdate()
 	{
+		if (!playerAnim) {
+			return;
+		}
+
+		if (!controller) {
+			return;
+		}
+
+
 		smoothPlayerPosition.Add (playerAnim.GetCameraTarget());
 
 		Vector3 target = smoothPlayerPosition.Get();

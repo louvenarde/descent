@@ -25,6 +25,9 @@ public class Level : MonoBehaviour {
 	[SerializeField]
 	private Gate[] splitSegmentGates;
 
+	[SerializeField]
+	private Transform[] playerSpawns;
+
 	private List<Gate> activeGates = new List<Gate>();
 
 	// Use this for initialization
@@ -34,13 +37,35 @@ public class Level : MonoBehaviour {
 		Game.i.RegisterLevel (this);
 	}
 
+	public void RegisterPlayer(byte index)
+	{
+		var player = Game.i.GetPlayer (index);
+		if (player) {
+			Vector3 spawnPosition = Vector3.zero;
+			Quaternion spawnRotation = Quaternion.identity;
+
+			if (playerSpawns != null && playerSpawns.Length > 0) {
+				Transform spawnPoint = playerSpawns [index % playerSpawns.Length];
+				spawnPosition = spawnPoint.position;
+				spawnRotation = spawnPoint.rotation;
+			} else if (generator.Pieces.Count > 0){
+				Vector3 direction = generator.Pieces [0].OutgoingConnector.exitPoint - generator.Pieces [0].transform.position;
+
+				spawnPosition = generator.Pieces [0].transform.position + direction / 2f;
+				spawnRotation = Quaternion.LookRotation (direction.normalized);
+			}
+
+			player.transform.position = spawnPosition;
+			player.transform.rotation = spawnRotation;
+		}
+	}
+
 	private void InitializeGates()
 	{
 		if (!startGate) {
 			var inst = Gate.Instantiate (gatePrefab, this.transform);
 			startGate = inst as Gate;
-			startGate.transform.position = generator.Pieces [1].transform.position;
-			startGate.transform.forward = generator.Pieces [1].transform.forward;
+			startGate.SetGateConnector(generator.Pieces[0].OutgoingConnector);
 		}
 
 		startGate.name = "START GATE";
@@ -48,8 +73,7 @@ public class Level : MonoBehaviour {
 
 		if (!endGate) {
 			endGate = Gate.Instantiate (gatePrefab, this.transform) as Gate;
-			endGate.transform.position = generator.Pieces [generator.Pieces.Count-1].transform.position;
-			endGate.transform.forward = generator.Pieces [generator.Pieces.Count-1].transform.forward;
+			endGate.SetGateConnector(generator.Pieces[generator.Pieces.Count-2].OutgoingConnector);
 		}
 
 		startGate.name = "END GATE";
@@ -57,10 +81,9 @@ public class Level : MonoBehaviour {
 
 		if (splitSegmentGates == null || splitSegmentGates.Length <= 0) {
 			var splitGatesList = new List<Gate> ();
-			for (int i = 2; i < generator.Pieces.Count - 1; i++) {
+			for (int i = 1; i < generator.Pieces.Count - 2; i++) {
 				var gate = Gate.Instantiate (gatePrefab, this.transform) as Gate;
-				gate.transform.position = generator.Pieces [i].transform.position;
-				gate.transform.forward = generator.Pieces [i].transform.forward;
+				gate.SetGateConnector(generator.Pieces[i].OutgoingConnector);
 				splitGatesList.Add (gate);
 			}
 
@@ -87,7 +110,7 @@ public class Level : MonoBehaviour {
 		}
 	}
 
-	void OnGateTriggeredCallback (Gate gate, Player player)
+	void OnGateTriggeredCallback (Gate gate, PlayerController player)
 	{
 		if (OnGateTriggered != null) {
 			OnGateTriggered.Invoke (gate, player);

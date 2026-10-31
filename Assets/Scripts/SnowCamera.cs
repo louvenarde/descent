@@ -5,10 +5,12 @@ using System.Collections;
 [ExecuteInEditMode]
 public class SnowCamera : MonoBehaviour
 {
+	[SerializeField]
+	private MeshRenderer previousPlane;
+
+	[Header("Optional")]
     [SerializeField]
     private GameObject follow;
-    [SerializeField]
-    private MeshRenderer previousPlane;
 
     private Material prevMaterial;
 
@@ -23,11 +25,42 @@ public class SnowCamera : MonoBehaviour
         previousPlane.sharedMaterial = prevMaterial;
 
         cam = GetComponent<Camera>();
-    }
+
+		if (Game.i)
+		{
+			Game.i.OnceLevelLoaded (RegisterPlayer);
+    	}
+	}
+
+	void OnDestroy()
+	{
+		#if UNITY_EDITOR
+		if (UnityEditor.EditorApplication.isPlaying)
+		{
+			Destroy (prevMaterial);
+		}
+		else
+		{
+			DestroyImmediate (prevMaterial);
+		}
+		#else
+		Destroy (prevMaterial);
+		#endif
+	}
+
+	private void RegisterPlayer()
+	{
+		PlayerController player = Game.i.GetPlayer (0);
+		follow = player.Board.gameObject;
+	}
 	
 	// Update is called once per frame
 	void Update ()
     {
+		if (!follow || !previousPlane) {
+			return;
+		}
+
         float dx9Offset = 0;
         if(SystemInfo.graphicsDeviceType == GraphicsDeviceType.Direct3D9)
             dx9Offset = 5.0f / 256.0f; // *sigh* d3d9 has the awful half-pixel offset on texture coordinates, without this the snow trail will slide on their own

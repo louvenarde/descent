@@ -378,6 +378,8 @@ public class PlayerController : MonoBehaviour
 
     public Transform Board { get { return board.transform; } }
 
+	public PlayerAnimation Animation { get { return playerAnimation; } }
+
 	public readonly SmoothFloat smoothSpeedKPH = new SmoothFloat();
 
     public readonly SmoothFloat smoothStableSpeedAmount = new SmoothFloat();
@@ -402,9 +404,12 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         placement = new HumanoidPlacement(this);
-        input = PlayerInput.MakeForPlatform(0);
-
     }
+
+	public void SetPlayerIndex(byte index)
+	{
+		input = PlayerInput.MakeForPlatform(index);
+	}
 
     private void Update()
     {
@@ -483,12 +488,20 @@ public class PlayerController : MonoBehaviour
     }
 
     public string GetBoardDump()
-    {
+	{
+		if (board == null) {
+			return string.Empty;
+		}
+
         return board.Dump();
     }
 
     public string GetInputDump()
     {
+		if (input == null) {
+			return string.Empty;
+		}
+
         return input.Dump();
     }
 
@@ -594,9 +607,13 @@ public class PlayerController : MonoBehaviour
 
 	private void FallIfFallAmountTooHigh(float impactEffectMultiplier=0f)
 	{
-		float fallAmount = GetFallAmount (impactEffectMultiplier);
-		if (fallAmount >= FALL_AMOUNT){
-			Fall ();
+		if (!isFalling)
+		{
+			float fallAmount = GetFallAmount (impactEffectMultiplier);
+			if (fallAmount >= FALL_AMOUNT){
+//				Debug.Log (string.Format ("Fall amount: {0} > {1}", fallAmount, FALL_AMOUNT));
+				Fall ();
+			}
 		}
 	}
 

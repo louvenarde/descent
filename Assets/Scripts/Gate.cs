@@ -11,7 +11,7 @@ public class Gate : MonoBehaviour {
 		End,
 	}
 
-	public delegate void OnGateTriggeredDelegate(Gate gate, Player player);
+	public delegate void OnGateTriggeredDelegate(Gate gate, PlayerController player);
 	public event OnGateTriggeredDelegate OnGateTriggered;
 
 	[SerializeField]
@@ -24,6 +24,8 @@ public class Gate : MonoBehaviour {
 
 	public EGateType GateType {get; private set;}
 
+	private TerrainPiece.Connector connector;
+
 	// Use this for initialization
 	void Start () {
 		for (int i = 0; i < colliders.Length; i++) {
@@ -34,14 +36,33 @@ public class Gate : MonoBehaviour {
 	public void SetGateType(EGateType type)
 	{
 		GateType = type; 
-		// TODO: Refresh visuals
+		RefreshVisuals ();
+	}
+
+	public void SetGateConnector(TerrainPiece.Connector connector)
+	{
+		transform.position = connector.exitPoint;
+		transform.forward = connector.exitDirection;
+		this.connector = connector;
+		RefreshVisuals ();
+	}
+
+	private void RefreshVisuals()
+	{
+
 	}
 
 	void OnGateEnter (Collider arg1, ColliderEventSource arg2)
 	{
 		if (OnGateTriggered != null) {
-			// For each collider in children of each player, check if it's the one?
-//			OnGateTriggered?.Invoke ();	
+			PlayerGateCollider playerCollider = arg1.gameObject.GetComponent<PlayerGateCollider> ();
+			if (playerCollider) {
+				if (playerCollider.GetController ()) {
+					if (OnGateTriggered != null) {
+						OnGateTriggered.Invoke (this, playerCollider.GetController ());	
+					}
+				}
+			}
 		}
 	}
 
@@ -60,7 +81,11 @@ public class Gate : MonoBehaviour {
 			UnityEditor.Handles.color = Color.blue;
 		}
 
-		UnityEditor.Handles.DrawWireDisc(transform.position, transform.forward, 10f);
+		if (connector.exitWidth > 0F) {
+			UnityEditor.Handles.DrawWireDisc (transform.position, transform.forward, connector.exitWidth);
+		} else {
+			UnityEditor.Handles.DrawWireDisc (transform.position, transform.forward, 10f);
+		}
 	}
 	#endif
 }
